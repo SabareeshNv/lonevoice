@@ -1,0 +1,207 @@
+/*
+ * Motion: Windows Phone / Zune page transitions.
+ *
+ * Astro's <ClientRouter /> runs the View Transitions API on every navigation.
+ * src/components/MotionDirector.astro decides which motion a navigation gets
+ * and writes it to <html data-motion="…">; this file draws each one.
+ *
+ *   pivot-next / pivot-prev   between the menu sections: content slides sideways
+ *   turnstile                 everything else: items swing out, then turn in
+ *
+ * Kept deliberately close to Windows Phone: lists feather (item by item),
+ * other pages turn in as a few large blocks, the header and sidebar stay put.
+ *
+ * The turnstile exit (items swinging away one by one) runs in the director's
+ * script, before the page changes, so each item turns on its own short hinge.
+ */
+
+:root {
+  --ease-in: cubic-bezier(0.55, 0, 0.9, 0.4);
+  --ease-out-quint: cubic-bezier(0.1, 0.9, 0.2, 1);
+  /* All timings in one place (the turnstile exit's are in src/lib/motion.ts). */
+  --duration-morph: 0.6s; /* shared elements flying */
+  --duration-feather: 0.6s; /* each item turning in */
+  --stagger-feather: 60ms; /* gap between items */
+  --duration-fade: 0.13s; /* old column disappearing */
+  --duration-pivot-out: 0.26s;
+  --duration-pivot-in: 0.53s;
+  --delay-pivot: 0.1s;
+  --hinge: perspective(800px);
+}
+
+/* ---------- Page columns (main and sidebar) ---------- */
+
+/*
+ * The columns change height between pages. Don't morph their boxes (that
+ * stretches the text); each snapshot stays where it is.
+ */
+::view-transition-group(main),
+::view-transition-group(sidebar) {
+  animation: none;
+}
+
+::view-transition-old(main),
+::view-transition-old(sidebar) {
+  height: auto;
+}
+
+@keyframes lv-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+/* Turnstile: the items have already swung away, so the old column only has to
+   disappear; the new column appears at once and its items feather in. */
+html[data-motion='turnstile']::view-transition-old(main),
+html[data-motion='turnstile']::view-transition-old(sidebar) {
+  animation: lv-fade-out var(--duration-fade) linear both !important;
+}
+
+html[data-motion='turnstile']::view-transition-new(main),
+html[data-motion='turnstile']::view-transition-new(sidebar) {
+  animation: none !important;
+}
+
+/* Pivot: the old section slides off one side, the new one in from the other. */
+@keyframes lv-pivot-out-left {
+  to {
+    opacity: 0;
+    transform: translateX(-25%);
+  }
+}
+
+@keyframes lv-pivot-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(35%);
+  }
+}
+
+@keyframes lv-pivot-out-right {
+  to {
+    opacity: 0;
+    transform: translateX(25%);
+  }
+}
+
+@keyframes lv-pivot-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-35%);
+  }
+}
+
+html[data-motion='pivot-next']::view-transition-old(main),
+html[data-motion='pivot-next']::view-transition-old(sidebar) {
+  animation: lv-pivot-out-left var(--duration-pivot-out) var(--ease-in) both !important;
+}
+
+html[data-motion='pivot-next']::view-transition-new(main),
+html[data-motion='pivot-next']::view-transition-new(sidebar) {
+  animation: lv-pivot-in-right var(--duration-pivot-in) var(--ease-out-quint) var(--delay-pivot) both !important;
+}
+
+html[data-motion='pivot-prev']::view-transition-old(main),
+html[data-motion='pivot-prev']::view-transition-old(sidebar) {
+  animation: lv-pivot-out-right var(--duration-pivot-out) var(--ease-in) both !important;
+}
+
+html[data-motion='pivot-prev']::view-transition-new(main),
+html[data-motion='pivot-prev']::view-transition-new(sidebar) {
+  animation: lv-pivot-in-left var(--duration-pivot-in) var(--ease-out-quint) var(--delay-pivot) both !important;
+}
+
+/*
+ * In a pivot the old sidebar only fades: sliding it left would carry it
+ * across the incoming page's main column.
+ */
+html[data-motion^='pivot']::view-transition-old(sidebar) {
+  animation: lv-fade-out var(--duration-fade) linear both !important;
+}
+
+/* ---------- Shared elements (continuum) ---------- */
+
+/* The site name, menu, titles and covers fly with a long, soft ease-out. */
+::view-transition-group(*) {
+  animation-duration: var(--duration-morph);
+  animation-timing-function: var(--ease-out-quint);
+}
+
+/* A cover grows from thumbnail to full width as one image, cropped to the box. */
+::view-transition-old(*.cover) {
+  display: none;
+}
+
+::view-transition-new(*.cover) {
+  height: 100%;
+  object-fit: cover;
+  animation: none;
+}
+
+/* Text that changes size scales as one copy instead of two cross-fading. */
+::view-transition-old(*.text) {
+  display: none;
+}
+
+::view-transition-new(*.text) {
+  animation: none;
+}
+
+/*
+ * The site header has no name on purpose: Windows Phone never animated a
+ * shared header. It is part of the page background (root), which cross-fades
+ * where it is on screen: identical headers show no change, the homepage's
+ * large header and the compact one cross-fade in place, and a header
+ * scrolled out of view can't appear on screen.
+ */
+
+/* ---------- Feather ---------- */
+
+/* Each item turns in on a hinge at its left edge, one after another. */
+@keyframes lv-feather {
+  from {
+    opacity: 0;
+    transform: var(--hinge) rotateY(60deg);
+  }
+}
+
+/*
+ * Two ways to feather:
+ *   class="feather" style="--i: 3"   on items in a list
+ *   data-feather                     on a container: its children, in order
+ */
+.feather,
+[data-feather] > * {
+  transform-origin: 0 50%;
+  animation: lv-feather var(--duration-feather) var(--ease-out-quint) both;
+  animation-delay: calc(min(var(--i, 0), 8) * var(--stagger-feather));
+}
+
+[data-feather] > :nth-child(2) { --i: 1; }
+[data-feather] > :nth-child(3) { --i: 2; }
+[data-feather] > :nth-child(4) { --i: 3; }
+[data-feather] > :nth-child(5) { --i: 4; }
+[data-feather] > :nth-child(6) { --i: 5; }
+[data-feather] > :nth-child(7) { --i: 6; }
+[data-feather] > :nth-child(8) { --i: 7; }
+[data-feather] > :nth-child(n + 9) { --i: 8; }
+
+/* Elements flying between pages this time (set by the director) don't also turn. */
+.feather.flying,
+[data-feather] > .flying {
+  animation: none;
+}
+
+
+/* A pivot slides whole sections; its items don't feather. */
+html[data-motion^='pivot'] :is(.feather, [data-feather] > *) {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feather,
+  [data-feather] > * {
+    animation: none;
+  }
+}

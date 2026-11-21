@@ -1,0 +1,96 @@
+---
+/**
+ * The shell of every page: <head>, skip link, header, main and footer.
+ *
+ * Content goes in the default slot. Pass a `sidebar` slot to get the
+ * two-column layout on large screens; without it the page is one column.
+ */
+import BaseHead, { type SeoProps } from '@/components/BaseHead.astro';
+import MotionDirector from '@/components/MotionDirector.astro';
+import SiteFooter from '@/components/SiteFooter.astro';
+import SiteHeader from '@/components/SiteHeader.astro';
+import { SITE } from '@/site.config';
+
+interface Props extends SeoProps {
+  header?: 'home' | 'page';
+}
+
+const { header = 'page', ...seo } = Astro.props;
+const hasSidebar = Astro.slots.has('sidebar');
+---
+
+<!doctype html>
+<html lang={SITE.lang}>
+  <head>
+    <BaseHead {...seo} />
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <SiteHeader variant={header} search={hasSidebar ? 'mobile' : 'always'} />
+    <div class:list={['container', 'layout', { 'with-sidebar': hasSidebar }]}>
+      <main id="content" class="main" transition:name="main" transition:animate="none">
+        <slot />
+      </main>
+      {
+        hasSidebar && (
+          <aside class="sidebar" aria-label={`More from ${SITE.title}`} transition:name="sidebar" transition:animate="none">
+            <slot name="sidebar" />
+          </aside>
+        )
+      }
+    </div>
+    <SiteFooter />
+    <MotionDirector />
+  </body>
+</html>
+
+<style>
+  .skip-link {
+    position: absolute;
+    top: var(--space-2xs);
+    left: var(--space-2xs);
+    z-index: 10;
+    padding: var(--space-2xs) var(--space-s);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    transform: translateY(-200%);
+  }
+
+  .skip-link:focus {
+    transform: none;
+  }
+
+  .layout {
+    padding-block-start: var(--space-header);
+  }
+
+  .main {
+    min-width: 0;
+    max-width: var(--width-main);
+  }
+
+  /* Phones: the sidebar follows the main content. */
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    margin-block-start: var(--space-2xl);
+  }
+
+  /* Tablet and desktop: posts and sidebar side by side (sizes from tokens). */
+  @media (width >= 48rem) {
+    .with-sidebar {
+      display: grid;
+      grid-template-columns: minmax(0, var(--width-main)) var(--width-side);
+      justify-content: space-between;
+      gap: var(--gap-columns);
+      align-items: start;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: var(--space-l);
+      margin-block-start: 0;
+    }
+  }
+</style>

@@ -1,0 +1,49 @@
+---
+/**
+ * The right-hand column on large screens (below the posts on smaller ones):
+ * the intro tile (homepage only), search, the pinned post, RSS and share links.
+ */
+import { getPinned } from '@/lib/posts';
+import { SITE } from '@/site.config';
+import PinnedCard from './PinnedCard.astro';
+import RoundButton from './RoundButton.astro';
+import SearchBox from './SearchBox.astro';
+import ShareLinks from './ShareLinks.astro';
+
+interface Props {
+  showIntro?: boolean;
+}
+
+const { showIntro = false } = Astro.props;
+const pinned = await getPinned();
+---
+
+{showIntro && <p class="intro">{SITE.intro}</p>}
+<SearchBox />
+{pinned && <PinnedCard post={pinned} />}
+<div class="follow">
+  <RoundButton href="/rss.xml" icon="rss" text="subscribe with RSS" />
+  <ShareLinks />
+</div>
+
+<style>
+  /* RSS and the share buttons sit together as one group. */
+  .follow {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-m);
+  }
+
+  .intro {
+    display: flex;
+    align-items: flex-start;
+    min-height: var(--size-side-tile);
+    padding: var(--space-s);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    font-size: var(--text-side-tile);
+    font-weight: var(--weight-light);
+    line-height: 1.3;
+  }
+</style>
