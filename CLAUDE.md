@@ -176,7 +176,9 @@ src/layouts/PageLayout  single-column text pages (About, policies)
 src/components/         one component per piece of the design (see README table)
 src/pages/              [...page] (home), posts/[slug], topics/, topics/[topic], archive, about,
                         search, content-policy, privacy-policy, 404, rss.xml.ts, robots.txt.ts
-public/                 favicon.svg, apple-touch-icon.png, og-default.jpg
+public/                 favicon.svg, apple-touch-icon.png, og-default.jpg,
+                        _headers (cache rules: `/_astro/*` immutable for a year; fixed-name images 1 day;
+                        `/pagefind/*` always revalidate)
 ```
 
 ## Open items and ideas (not done unless the owner asks)
@@ -186,7 +188,7 @@ public/                 favicon.svg, apple-touch-icon.png, og-default.jpg
   - Submit `https://lonevoice.pages.dev/sitemap-index.xml` to Google Search Console and Bing (and again if a custom domain is added later).
   - Checking motion on the iPhone.
 - **Offered but not chosen yet:**
-  - `public/_headers` for long cache times and security headers.
+  - Security headers in `public/_headers` (long cache times are already there).
   - Load the first homepage cover eagerly.
   - A Git-based CMS (Pages CMS or Decap) for writing from a phone.
   - A light theme switch.
