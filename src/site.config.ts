@@ -6,9 +6,9 @@ export const SITE = {
   /** Shown under the large title on the homepage. */
   tagline: 'ideas half formed, feelings half named.',
   /** Used for search engines and the RSS feed. */
-  description: 'lone voice | a personal blog for feelings and thoughts worth writting down.',
+  description: 'lone voice | a personal blog for feelings and thoughts worth writing down.',
   /** The text in the accent tile at the top of the homepage sidebar. */
-  intro: 'a quiet personal space for feelings and thoughts worth writting down.',
+  intro: 'a quiet personal space for feelings and thoughts worth writing down.',
   /**
    * The site's address. Canonical links, the sitemap, robots.txt, RSS and
    * structured data all use it. Change it here when the domain changes.

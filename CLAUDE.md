@@ -84,7 +84,7 @@ Each post is a Markdown file in `src/content/posts/`. The file name becomes the 
   - neither → note (shown in full on the timeline)
   - `link` works with any kind (the card goes under the text)
 - **Cover images** live in `src/assets/covers/`. Astro resizes them.
-- **Sample content is placeholder.** The 10 sample posts, the 8 sample books, the 3 generated cover images, the About text, both policies (`[bracketed]` text) and `SITE.intro` all need replacing by the owner. The sample "Starting this blog" post is marked `pinned`.
+- **Sample content is placeholder.** The 10 sample posts, the 3 generated cover images, the About text, both policies (`[bracketed]` text) and `SITE.intro` all need replacing by the owner. The sample "Starting this blog" post is marked `pinned`.
 
 ## Books page (`src/pages/books.astro`)
 
@@ -92,7 +92,7 @@ A grid of books read, grouped by the year finished (newest year first), styled l
 
 - **Data:** one list in `src/content/books.yaml` (collection `books` in `src/content.config.ts`; the `yaml` package parses it and gives each book its position as id). Each book: `title`, `author`, `year` (required) and an optional `cover` (a picture in `src/assets/books/`, written as `../assets/books/name.jpg`). Within a year the order is the order in the file.
 - **Cover:** 2:3, cropped by Astro; alt is empty because the title sits right beneath it. Without a cover the book gets a tile (gradient, magenta, grey in turn) with the title's first letter (leading "the/a/an" skipped).
-- **Sample books** in the file are placeholders for the owner to replace.
+- **The books in the file are the owner's own** (Musafir Cafe, The Mirror Of Infinite Endings, Ikigai), each with a cover in `src/assets/books/`. A title containing a colon needs quotes in the YAML.
 - Books are not pages and are not in search or the sitemap beyond `/books/` itself.
 
 ## Motion (Windows Phone page transitions) — read before touching

@@ -1,14 +1,14 @@
-# Books I've read. Add one entry per book, in any order: the page sorts them
-# by year (newest first) and keeps the order you write them in within a year.
+# Books I've read. Add one entry per book. The page groups them by year, newest
+# year first, and keeps the order written here within a year.
 #
 #   - title: The book's title
 #     author: The author's name
-#     year: 2026                          # the year you finished reading it
-#     cover: ../assets/books/example.jpg  # optional: a picture in src/assets/books/
+#     year: 2026                          # the year you finished reading it, not the year it was published
+#     cover: ../assets/books/example.jpg  # optional: a picture saved in src/assets/books/
 #
-# Without a cover, the book gets a coloured tile with the title's first letter.
+# Without a cover, the book gets a coloured tile with the first letter of its title.
+# Put a title in quotes if it contains a colon, as the third entry does.
 
-# Sample books: replace these with your own.
 - title: Musafir Cafe
   author: Divya Prakash Dubey
   year: 2026
