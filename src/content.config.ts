@@ -1,5 +1,6 @@
 import { defineCollection } from 'astro:content';
-import { glob } from 'astro/loaders';
+import { file, glob } from 'astro/loaders';
+import { parse } from 'yaml';
 import { z } from 'astro/zod';
 
 /**
@@ -40,4 +41,22 @@ const posts = defineCollection({
       }),
 });
 
-export const collections = { posts };
+/**
+ * The books page. All books live in one list, `src/content/books.yaml`:
+ * a title, an author, the year it was finished and, if you like, a cover.
+ */
+const books = defineCollection({
+  // The list has no ids, so each book gets its position in the file.
+  loader: file('src/content/books.yaml', {
+    parser: (text) => (parse(text) as object[]).map((book, i) => ({ id: String(i), ...book })),
+  }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      author: z.string(),
+      year: z.number().int(),
+      cover: image().optional(),
+    }),
+});
+
+export const collections = { posts, books };

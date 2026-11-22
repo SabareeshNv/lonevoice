@@ -38,7 +38,7 @@ Project memory for Claude. Read this before changing anything. Keep it current: 
 - **English interface**, Open Sans 300/400/600 (via `@fontsource/open-sans`).
 - **Dark only** (`color-scheme: dark`). Every colour token also has a light value via `light-dark()`. Changing it to `dark light` would follow the reader's system setting, but the owner hasn't asked for that.
 - **Browser reach.** `cssTarget` in `astro.config.mjs` (Chrome 100, Firefox 100, Safari 15.4, about early 2022) makes the build rewrite newer CSS for older browsers: `light-dark()` colours become `var()` fallbacks and range queries (`width >= 48rem`) become `min-width`. Write media queries as `min-width` anyway. Before this, the site needed Chrome 123 / Safari 17.5 / Firefox 120 (2024) for colours and Chrome 104 / Safari 16.4 (2023) for the tablet and desktop layouts. Page transitions still need a 2023+ browser (Safari 18 for shared elements) and simply don't animate elsewhere. Never test by eye only: compare `dist` screenshots before and after a CSS change.
-- **Almost no JavaScript.** The only scripts are the search page (Pagefind), `MotionDirector`, and Astro's `<ClientRouter />`. Forms work without JavaScript.
+- **Almost no JavaScript.** The only scripts are the search page (Pagefind), `MotionDirector`, Astro's `<ClientRouter />`, the share buttons (`ShareLinks`) and the menu scroll (`PivotNav`). Forms work without JavaScript.
 - **Accessibility:** real links and buttons, visible focus outlines, a skip link, `aria-label` on icon-only controls, `alt` text required for covers (the schema enforces it), and `prefers-reduced-motion` turns all motion off.
 
 ## Design decisions (all approved by the owner)
@@ -49,7 +49,7 @@ Project memory for Claude. Read this before changing anything. Keep it current: 
   - Inner pages have a compact name (56 px on tablet and desktop).
   - Pink→orange angled shapes (`ZuneArt`) sit behind the name and fade to black on the left. On phones the shapes stay beside the name, clear of the menu.
   - No domain name is shown in the header (the owner asked to remove it).
-- **Menu:** posts · topics · archive · about. There is **no "photos"** item (the owner removed it). On phones the menu scrolls sideways, with a fade at the right edge and a spacer after the last item.
+- **Menu:** posts · topics · archive · books · about. There is **no "photos"** item (the owner removed it). On phones the menu scrolls sideways, with a fade at the right edge and a spacer after the last item; a small script in `PivotNav` scrolls the current item into view (five items don't fit on a phone).
 - **Search button** (round, in the header): shown on phones; on tablet and desktop only on pages without a sidebar (the sidebar has a search box).
 - **Layout:**
   - Desktop has two columns: the main column (760 px) and a sticky sidebar (320 px), 64 px apart, 1200 px maximum width.
@@ -69,7 +69,7 @@ Project memory for Claude. Read this before changing anything. Keep it current: 
   - **Titles and text:** titles are 32 px bold. Summaries are a softer grey (`--color-body`). Notes are 19 px regular.
   - **Footer row:** tags (pink, no boxes) sit on the left and "continue reading →" (**white**, not pink) on the right edge, in one row. The owner found the stacked, same-coloured version cluttered.
   - Hairlines separate posts.
-- **Other pages:** post (44 px title, prose, older/newer links), topics (tiles ordered by post count, then name; the first gets the gradient, the second magenta, the 1st and 7th are double width; 2 columns on phones, 3 on tablet, 4 on desktop; `grid-auto-flow: dense` lets small tiles fill gaps beside wide ones; has the sidebar, like the homepage and archive, at the owner's request), single topic, archive (year → month → rows; paginated at `SITE.archivePageSize`, 20, so `/archive/`, `/archive/2/`…; one page until there are more posts than that), about, search, content and privacy policies (one shared layout), 404.
+- **Other pages:** post (44 px title, prose, older/newer links), topics (tiles ordered by post count, then name; the first gets the gradient, the second magenta, the 1st and 7th are double width; 2 columns on phones, 3 on tablet, 4 on desktop; `grid-auto-flow: dense` lets small tiles fill gaps beside wide ones; has the sidebar, like the homepage and archive, at the owner's request), **books** (see below), single topic, archive (year → month → rows; paginated at `SITE.archivePageSize`, 20, so `/archive/`, `/archive/2/`…; one page until there are more posts than that), about, search, content and privacy policies (one shared layout), 404.
 - **Footer:** an oversized faint "lone voice", the copyright line, and Content Policy / Privacy Policy links.
 
 ## Content model (`src/content.config.ts`)
@@ -84,7 +84,16 @@ Each post is a Markdown file in `src/content/posts/`. The file name becomes the 
   - neither → note (shown in full on the timeline)
   - `link` works with any kind (the card goes under the text)
 - **Cover images** live in `src/assets/covers/`. Astro resizes them.
-- **Sample content is placeholder.** The 10 sample posts, the 3 generated cover images, the About text, both policies (`[bracketed]` text) and `SITE.intro` all need replacing by the owner. The sample "Starting this blog" post is marked `pinned`.
+- **Sample content is placeholder.** The 10 sample posts, the 8 sample books, the 3 generated cover images, the About text, both policies (`[bracketed]` text) and `SITE.intro` all need replacing by the owner. The sample "Starting this blog" post is marked `pinned`.
+
+## Books page (`src/pages/books.astro`)
+
+A grid of books read, grouped by the year finished (newest year first), styled like the archive's year headings and the topics tiles: 2 columns on phones, 3 on tablet, 4 on desktop, with the sidebar.
+
+- **Data:** one list in `src/content/books.yaml` (collection `books` in `src/content.config.ts`; the `yaml` package parses it and gives each book its position as id). Each book: `title`, `author`, `year` (required) and an optional `cover` (a picture in `src/assets/books/`, written as `../assets/books/name.jpg`). Within a year the order is the order in the file.
+- **Cover:** 2:3, cropped by Astro; alt is empty because the title sits right beneath it. Without a cover the book gets a tile (gradient, magenta, grey in turn) with the title's first letter (leading "the/a/an" skipped).
+- **Sample books** in the file are placeholders for the owner to replace.
+- Books are not pages and are not in search or the sitemap beyond `/books/` itself.
 
 ## Motion (Windows Phone page transitions) — read before touching
 
@@ -97,7 +106,7 @@ Built on Astro's `<ClientRouter />` (in `BaseHead.astro`), so pages swap without
 | `src/styles/motion.css` | All CSS timings as tokens at the top, plus the keyframes for pivot, feather, continuum, tagline and search button |
 
 **The motions:**
-- **Pivot:** between menu sections (`/`, `/N/`, `/topics/`, `/archive/`, `/archive/N/`, `/about/`). The main column slides sideways in the direction of the menu, and the old sidebar fades. Items don't feather during a pivot.
+- **Pivot:** between menu sections (`/`, `/N/`, `/topics/`, `/archive/`, `/archive/N/`, `/books/`, `/about/`). The main column slides sideways in the direction of the menu, and the old sidebar fades. Items don't feather during a pivot.
 - **Turnstile:** every other navigation.
   - **Exit:** the visible items swing away one by one on a left-edge hinge, using the Web Animations API inside an overridden `event.loader`, in parallel with loading the next page.
   - **Entry:** the old column fades; the new column appears at once and its items **feather** in.
@@ -167,6 +176,7 @@ npm run preview
 src/site.config.ts      SITE (title, tagline, intro, url, publisher, socialImage, lang, locale,
                         timeZone Asia/Kolkata, pageSize 10, archivePageSize 20, copyrightYear), NAV, LEGAL_LINKS
 src/content.config.ts   post schema
+src/lib/books.ts        getBooks, getBooksByYear
 src/lib/posts.ts        getPosts, isPhoto/isNote, excerpt/summary/displayTitle, topics, pinned,
                         archive grouping, linkHost
 src/lib/format.ts       date parts in SITE.timeZone (en-GB)
@@ -175,7 +185,7 @@ src/lib/motion.ts       motion choice, timings, shared names
 src/layouts/BaseLayout  head, skip link, header, main (+ optional sidebar slot), footer, MotionDirector
 src/layouts/PageLayout  single-column text pages (About, policies)
 src/components/         one component per piece of the design (see README table)
-src/pages/              [...page] (home), posts/[slug], topics/, topics/[topic], archive/[...page], about,
+src/pages/              [...page] (home), posts/[slug], topics/, topics/[topic], archive/[...page], books, about,
                         search, content-policy, privacy-policy, 404, rss.xml.ts, robots.txt.ts
 public/                 favicon.svg, apple-touch-icon.png, og-default.jpg,
                         _headers (cache rules: `/_astro/*` immutable for a year; fixed-name images 1 day;

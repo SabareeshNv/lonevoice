@@ -35,6 +35,7 @@ export const NAV = [
   { label: 'posts', href: '/', match: '' },
   { label: 'topics', href: '/topics/', match: 'topics' },
   { label: 'archive', href: '/archive/', match: 'archive' },
+  { label: 'books', href: '/books/', match: 'books' },
   { label: 'about', href: '/about/', match: 'about' },
 ] as const;
 

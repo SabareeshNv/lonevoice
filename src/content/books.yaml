@@ -1,0 +1,35 @@
+# Books I've read. Add one entry per book, in any order: the page sorts them
+# by year (newest first) and keeps the order you write them in within a year.
+#
+#   - title: The book's title
+#     author: The author's name
+#     year: 2026                          # the year you finished it
+#     cover: ../assets/books/example.jpg  # optional: a picture in src/assets/books/
+#
+# Without a cover, the book gets a coloured tile with the title's first letter.
+
+# Sample books: replace these with your own.
+- title: Walden
+  author: Henry David Thoreau
+  year: 2026
+- title: The Remains of the Day
+  author: Kazuo Ishiguro
+  year: 2026
+- title: Meditations
+  author: Marcus Aurelius
+  year: 2026
+- title: A Room of One's Own
+  author: Virginia Woolf
+  year: 2025
+- title: Siddhartha
+  author: Hermann Hesse
+  year: 2025
+- title: The Unbearable Lightness of Being
+  author: Milan Kundera
+  year: 2025
+- title: Pachinko
+  author: Min Jin Lee
+  year: 2024
+- title: The Little Prince
+  author: Antoine de Saint-Exupéry
+  year: 2024
