@@ -6,7 +6,10 @@
 import Icon, { type IconName } from './Icon.astro';
 
 interface Props {
-  href: string;
+  /** Where the link goes. Left out for a share button (see `share`). */
+  href?: string;
+  /** Makes a real `<button>` that the page script turns into a share window. */
+  share?: string;
   icon: IconName;
   /** Visible text beside the circle. Without it, `label` names the button. */
   text?: string;
@@ -16,7 +19,7 @@ interface Props {
   external?: boolean;
 }
 
-const { href, icon, text, label, current = false, external = false } = Astro.props;
+const { href = '', share, icon, text, label, current = false, external = false } = Astro.props;
 
 // Brand marks are drawn smaller inside their box, so give them a bigger one to match the line icons.
 const brands: IconName[] = ['facebook', 'x', 'telegram', 'whatsapp'];
@@ -27,18 +30,32 @@ const iconSize = brands.includes(icon) ? 24 : 18;
 const isFile = !external && /\.[a-z0-9]+$/i.test(href.split(/[?#]/)[0] ?? '');
 ---
 
-<a
-  href={href}
-  class:list={['round', { current }]}
-  aria-label={text ? undefined : label}
-  aria-current={current ? 'page' : undefined}
-  data-astro-reload={isFile ? true : undefined}
-  target={external ? '_blank' : undefined}
-  rel={external ? 'noopener noreferrer' : undefined}
->
-  <span class="circle"><Icon name={icon} size={iconSize} /></span>
-  {text && <span class="text">{text}</span>}
-</a>
+{
+  share ? (
+    // Not a link on purpose: ad blockers (Brave, uBlock…) hide any <a> whose
+    // address looks like a share link. The address is built when it's tapped.
+    <button type="button" class="round" data-share={share} aria-label={label}>
+      <span class="circle">
+        <Icon name={icon} size={iconSize} />
+      </span>
+    </button>
+  ) : (
+    <a
+      href={href}
+      class:list={['round', { current }]}
+      aria-label={text ? undefined : label}
+      aria-current={current ? 'page' : undefined}
+      data-astro-reload={isFile ? true : undefined}
+      target={external ? '_blank' : undefined}
+      rel={external ? 'noopener noreferrer' : undefined}
+    >
+      <span class="circle">
+        <Icon name={icon} size={iconSize} />
+      </span>
+      {text && <span class="text">{text}</span>}
+    </a>
+  )
+}
 
 <style>
   .round {
@@ -51,6 +68,13 @@ const isFile = !external && /\.[a-z0-9]+$/i.test(href.split(/[?#]/)[0] ?? '');
 
   .round:hover {
     text-decoration: none;
+  }
+
+  button.round {
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
   }
 
   .circle {
