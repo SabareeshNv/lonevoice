@@ -36,10 +36,11 @@ export const NAV = [
   { label: 'topics', href: '/topics/', match: 'topics' },
   { label: 'archive', href: '/archive/', match: 'archive' },
   { label: 'books', href: '/books/', match: 'books' },
-  { label: 'about', href: '/about/', match: 'about' },
 ] as const;
 
-export const LEGAL_LINKS = [
+/** The small links in the footer, in order. */
+export const FOOTER_LINKS = [
+  { label: 'About', href: '/about/' },
   { label: 'Content Policy', href: '/content-policy/' },
   { label: 'Privacy Policy', href: '/privacy-policy/' },
 ] as const;

@@ -4,7 +4,7 @@
  */
 
 /** The menu sections in order; moving between them is a sideways pivot. */
-const SECTION_PATHS = ['/', '/topics/', '/archive/', '/books/', '/about/'];
+const SECTION_PATHS = ['/', '/topics/', '/archive/', '/books/'];
 
 /** Position of a URL in the menu, or undefined if it isn't a section page. */
 export function sectionIndex(url: URL): number | undefined {

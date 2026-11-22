@@ -24,18 +24,6 @@ const isCurrent = (match: string) => (match === '' ? section === '' || section =
   </ul>
 </nav>
 
-<script>
-  // Five items don't fit on a phone: scroll the menu so the current page shows.
-  // (On larger screens the menu doesn't scroll, so this does nothing.)
-  document.addEventListener('astro:page-load', () => {
-    const link = document.querySelector<HTMLElement>('nav[aria-label="Sections"] a[aria-current="page"]');
-    const list = link?.closest('ul');
-    if (!link || !list) return;
-    const offset = link.getBoundingClientRect().left - list.getBoundingClientRect().left + list.scrollLeft;
-    list.scrollLeft = offset - (list.clientWidth - link.offsetWidth) / 2;
-  });
-</script>
-
 <style>
   /* Phones: one row that scrolls sideways, like a Windows Phone pivot. */
   ul {
