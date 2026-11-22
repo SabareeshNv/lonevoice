@@ -78,7 +78,7 @@ const hasSidebar = Astro.slots.has('sidebar');
   }
 
   /* Tablet and desktop: posts and sidebar side by side (sizes from tokens). */
-  @media (width >= 48rem) {
+  @media (min-width: 48rem) {
     .with-sidebar {
       display: grid;
       grid-template-columns: minmax(0, var(--width-main)) var(--width-side);

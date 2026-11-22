@@ -46,7 +46,7 @@ const { title, description, hideTitle = false, updated } = Astro.props;
     margin-block-start: 0;
   }
 
-  @media (width >= 48rem) {
+  @media (min-width: 48rem) {
     .content {
       margin-block-start: var(--space-xl);
     }

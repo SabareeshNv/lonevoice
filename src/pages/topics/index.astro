@@ -93,7 +93,7 @@ const count = (n: number) => `${n} ${n === 1 ? 'post' : 'posts'}`;
   }
 
   /* Tablet: three tiles a row beside the narrow sidebar. */
-  @media (width >= 48rem) {
+  @media (min-width: 48rem) {
     .tiles {
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: var(--space-xs);
@@ -110,7 +110,7 @@ const count = (n: number) => `${n} ${n === 1 ? 'post' : 'posts'}`;
   }
 
   /* Desktop: four tiles a row beside the full sidebar. */
-  @media (width >= 64rem) {
+  @media (min-width: 64rem) {
     .tiles {
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }

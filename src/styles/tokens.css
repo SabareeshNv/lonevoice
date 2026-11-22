@@ -16,7 +16,10 @@
    */
   color-scheme: dark;
 
-  /* Colour: light-dark(light value, dark value). */
+  /*
+   * Colour: light-dark(light value, dark value). Browsers from before 2024 don't
+   * know light-dark(); the build (cssTarget in astro.config.mjs) rewrites it for them.
+   */
   --color-bg: light-dark(#fff, #000);
   --color-fg: light-dark(#000, #fff);
   --color-body: light-dark(#3d3d3d, #c4c4c4);
@@ -93,7 +96,7 @@
   --size-side-tile: 12.5rem; /* 200 — intro tile height */
 }
 
-@media (width >= 48rem) {
+@media (min-width: 48rem) {
   :root {
     --text-post-title: 2rem; /* 32 */
     --text-article-title: 2.75rem; /* 44 */
@@ -119,7 +122,7 @@
   }
 }
 
-@media (width >= 64rem) {
+@media (min-width: 64rem) {
   :root {
     /* Desktop: the full-size timeline and sidebar. */
     --text-post-title: 2rem; /* 32 */

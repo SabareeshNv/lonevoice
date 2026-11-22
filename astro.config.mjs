@@ -16,6 +16,13 @@ export default defineConfig({
     prefetchAll: true,
     defaultStrategy: 'viewport',
   },
+  vite: {
+    build: {
+      // Write the CSS so browsers from early 2022 still understand it: the
+      // build turns newer shorthand (like `width >= 48rem`) into the older form.
+      cssTarget: ['chrome100', 'firefox100', 'safari15.4'],
+    },
+  },
   integrations: [
     sitemap({
       // Search results are not content; keep them out of the sitemap.

@@ -174,7 +174,7 @@ const { Content } = !title ? await render(post) : { Content: null };
   }
 
   /* Tablets and up: date block on the left, a thin divider, then the post. */
-  @media (width >= 48rem) {
+  @media (min-width: 48rem) {
     .post {
       display: grid;
       grid-template-columns: var(--size-date-column) minmax(0, 1fr);
