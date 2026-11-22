@@ -92,5 +92,32 @@ const hasSidebar = Astro.slots.has('sidebar');
       top: var(--space-l);
       margin-block-start: 0;
     }
+
+    /*
+     * A sidebar taller than the screen can't show its bottom (the share
+     * buttons) if it sticks by its top. When it is taller, `top` goes negative,
+     * so it sticks by its bottom instead. The script below sets --sidebar-height.
+     * Without it (or without dvh), the plain top offset above applies.
+     */
+    @supports (height: 100dvh) {
+      .sidebar {
+        top: min(var(--space-l), calc(100dvh - var(--sidebar-height, 0px) - var(--space-l)));
+      }
+    }
   }
 </style>
+
+<script>
+  // Tell the CSS how tall the sidebar is, and keep it up to date (fonts loading,
+  // the window resizing). The sidebar is replaced on every page change, so this
+  // watches whichever one is on screen.
+  let watcher: ResizeObserver | undefined;
+
+  document.addEventListener('astro:page-load', () => {
+    watcher?.disconnect();
+    const sidebar = document.querySelector<HTMLElement>('.sidebar');
+    if (!sidebar) return;
+    watcher = new ResizeObserver(() => sidebar.style.setProperty('--sidebar-height', `${sidebar.offsetHeight}px`));
+    watcher.observe(sidebar);
+  });
+</script>

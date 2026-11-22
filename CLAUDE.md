@@ -38,7 +38,7 @@ Project memory for Claude. Read this before changing anything. Keep it current: 
 - **English interface**, Open Sans 300/400/600 (via `@fontsource/open-sans`), self-hosted. Only the `latin`, `latin-ext`, `math` and `symbols` alphabets are imported in `BaseHead.astro` (the last two hold the ← → arrows, so they must stay). Importing the whole package added about 25 KB of Cyrillic, Greek, Hebrew and Vietnamese rules to every page's CSS for nothing. Text in those alphabets falls back to the system font; to support one, import its `<name>-<weight>.css` files.
 - **Dark only** (`color-scheme: dark`). Every colour token also has a light value via `light-dark()`. Changing it to `dark light` would follow the reader's system setting, but the owner hasn't asked for that.
 - **Browser reach.** `cssTarget` in `astro.config.mjs` (Chrome 100, Firefox 100, Safari 15.4, about early 2022) makes the build rewrite newer CSS for older browsers: `light-dark()` colours become `var()` fallbacks and range queries (`width >= 48rem`) become `min-width`. Write media queries as `min-width` anyway. Before this, the site needed Chrome 123 / Safari 17.5 / Firefox 120 (2024) for colours and Chrome 104 / Safari 16.4 (2023) for the tablet and desktop layouts. Page transitions still need a 2023+ browser (Safari 18 for shared elements) and simply don't animate elsewhere. Never test by eye only: compare `dist` screenshots before and after a CSS change.
-- **Almost no JavaScript.** The only scripts are the search page (Pagefind), `MotionDirector`, Astro's `<ClientRouter />`, and the share buttons (`ShareLinks`). Forms work without JavaScript.
+- **Almost no JavaScript.** The only scripts are the search page (Pagefind), `MotionDirector`, Astro's `<ClientRouter />`, the share buttons (`ShareLinks`) and the sidebar-height measurer (`BaseLayout`). Forms work without JavaScript.
 - **Accessibility:** real links and buttons, visible focus outlines, a skip link, `aria-label` on icon-only controls, `alt` text required for covers (the schema enforces it), and `prefers-reduced-motion` turns all motion off.
 
 ## Design decisions (all approved by the owner)
@@ -54,6 +54,7 @@ Project memory for Claude. Read this before changing anything. Keep it current: 
 - **Layout:**
   - Desktop has two columns: the main column (760 px) and a sticky sidebar (320 px), 64 px apart, 1200 px maximum width.
   - Tablet has two columns too: the main column takes the rest, the sticky sidebar is 240 px, 32 px apart.
+  - **The sticky sidebar sticks by its top when it fits on screen, and by its bottom when it is taller** (the homepage's is about 800 px, taller than most laptop screens). Otherwise the share buttons at its foot could not be reached until the end of the page; the owner reported it. `BaseLayout` does this with a negative `top` (`min(32px, 100dvh − sidebar height − 32px)`), fed by a tiny script that writes the sidebar's height to `--sidebar-height`. Without the script the plain top offset still applies.
   - Phones have one column, with the sidebar below the content.
   - The gap below the header is 88 px on desktop and 48 px on phones (`--space-header`); the owner asked for more breathing room.
 - **Sidebar contents and order:**
