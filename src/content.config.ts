@@ -54,6 +54,7 @@ const books = defineCollection({
     z.object({
       title: z.string(),
       author: z.string(),
+      // year i read the book, not the year it was published. I don't care about that.
       year: z.number().int(),
       cover: image().optional(),
     }),
