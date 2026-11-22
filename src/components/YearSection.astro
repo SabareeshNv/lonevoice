@@ -1,0 +1,39 @@
+---
+/**
+ * One year of a list (the archive's posts, the books page): a large thin year
+ * heading, the newest year bright and older years grey, with the year's content
+ * below it. Years that follow each other get extra space between them.
+ */
+interface Props {
+  year: number | string;
+  /** An older year: shown in grey. */
+  past?: boolean;
+}
+
+const { year, past = false } = Astro.props;
+---
+
+<section class="year" aria-labelledby={`year-${year}`}>
+  <h2 id={`year-${year}`} class:list={['year-title', 'feather', { past }]}>
+    {year}
+  </h2>
+  <slot />
+</section>
+
+<style>
+  .year + .year {
+    margin-block-start: var(--space-2xl);
+  }
+
+  .year-title {
+    margin-inline-start: -0.04em;
+    font-size: var(--text-page-title);
+    font-weight: var(--weight-light);
+    line-height: 1;
+    letter-spacing: var(--tracking-display);
+  }
+
+  .past {
+    color: var(--color-muted);
+  }
+</style>

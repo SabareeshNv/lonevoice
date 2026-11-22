@@ -6,6 +6,7 @@
 import type { GetStaticPaths, Page } from 'astro';
 import Pagination from '@/components/Pagination.astro';
 import Sidebar from '@/components/Sidebar.astro';
+import YearSection from '@/components/YearSection.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { dateParts } from '@/lib/format';
 import { displayTitle, getPosts, groupByYearAndMonth, type Post, postUrl } from '@/lib/posts';
@@ -36,10 +37,7 @@ const description = first
   <h1 class="visually-hidden">Archive</h1>
   {
     years.map(({ year, months }) => (
-      <section class="year" aria-labelledby={`year-${year}`}>
-        <h2 id={`year-${year}`} class:list={['year-title', 'feather', { past: year !== latestYear }]}>
-          {year}
-        </h2>
+      <YearSection year={year} past={year !== latestYear}>
         {months.map(({ month, posts }) => (
           <section class="month" aria-label={`${month} ${year}`}>
             <h3 class="month-title feather" style="--i: 1">{month}</h3>
@@ -60,7 +58,7 @@ const description = first
             </ul>
           </section>
         ))}
-      </section>
+      </YearSection>
     ))
   }
   <Pagination page={page} label="More archive pages" />
@@ -68,22 +66,6 @@ const description = first
 </BaseLayout>
 
 <style>
-  .year + .year {
-    margin-block-start: var(--space-2xl);
-  }
-
-  .year-title {
-    margin-inline-start: -0.04em;
-    font-size: var(--text-page-title);
-    font-weight: var(--weight-light);
-    line-height: 1;
-    letter-spacing: var(--tracking-display);
-  }
-
-  .past {
-    color: var(--color-muted);
-  }
-
   .month {
     margin-block-start: var(--space-l);
   }

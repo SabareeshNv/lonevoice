@@ -3,9 +3,23 @@
  * Everything in <head>: title, description, canonical link, link-preview
  * tags (Open Graph, Twitter), structured data and the page-transition router.
  */
-import '@fontsource/open-sans/300.css';
-import '@fontsource/open-sans/400.css';
-import '@fontsource/open-sans/600.css';
+// Open Sans, self-hosted. Only the alphabets the site uses are loaded: Latin
+// (English and most European names), Latin extended, and the math and symbols
+// sets (they hold the ← → arrows). The full package also has Cyrillic, Greek,
+// Hebrew and Vietnamese, which would add about 25 KB to every page's CSS. To
+// add one, import e.g. '@fontsource/open-sans/vietnamese-400.css' for each weight.
+import '@fontsource/open-sans/latin-300.css';
+import '@fontsource/open-sans/latin-400.css';
+import '@fontsource/open-sans/latin-600.css';
+import '@fontsource/open-sans/latin-ext-300.css';
+import '@fontsource/open-sans/latin-ext-400.css';
+import '@fontsource/open-sans/latin-ext-600.css';
+import '@fontsource/open-sans/math-300.css';
+import '@fontsource/open-sans/math-400.css';
+import '@fontsource/open-sans/math-600.css';
+import '@fontsource/open-sans/symbols-300.css';
+import '@fontsource/open-sans/symbols-400.css';
+import '@fontsource/open-sans/symbols-600.css';
 import '@/styles/global.css';
 import type { ImageMetadata } from 'astro';
 import { getImage } from 'astro:assets';
@@ -68,7 +82,7 @@ const imageUrl = new URL(imagePath, Astro.site).href;
 <link rel="sitemap" href="/sitemap-index.xml" />
 <meta name="theme-color" content="#000000" />
 
-<!-- Link previews -->
+{/* Link previews */}
 <meta property="og:site_name" content={SITE.title} />
 <meta property="og:locale" content={SITE.locale.replace('-', '_')} />
 <meta property="og:type" content={type} />
@@ -87,8 +101,8 @@ const imageUrl = new URL(imagePath, Astro.site).href;
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={imageUrl} />
 
-<!-- Structured data -->
+{/* Structured data */}
 {schema.map((item) => <script type="application/ld+json" set:html={JSON.stringify(item)} />)}
 
-<!-- Page transitions: see src/lib/motion.ts and src/styles/motion.css. -->
+{/* Page transitions: see src/lib/motion.ts and src/styles/motion.css. */}
 <ClientRouter />

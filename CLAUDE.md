@@ -35,7 +35,7 @@ Project memory for Claude. Read this before changing anything. Keep it current: 
 
   The owner expects mobile, tablet and desktop to be distinct. Don't add another size without asking; a large-desktop or small-phone size has been offered but not chosen.
 - **Tokens only.** Colours, font sizes, spacing and widths come from `src/styles/tokens.css`. Never hard-code a value a token exists for. Some tokens change value at 48rem, so components often need no media query.
-- **English interface**, Open Sans 300/400/600 (via `@fontsource/open-sans`).
+- **English interface**, Open Sans 300/400/600 (via `@fontsource/open-sans`), self-hosted. Only the `latin`, `latin-ext`, `math` and `symbols` alphabets are imported in `BaseHead.astro` (the last two hold the ← → arrows, so they must stay). Importing the whole package added about 25 KB of Cyrillic, Greek, Hebrew and Vietnamese rules to every page's CSS for nothing. Text in those alphabets falls back to the system font; to support one, import its `<name>-<weight>.css` files.
 - **Dark only** (`color-scheme: dark`). Every colour token also has a light value via `light-dark()`. Changing it to `dark light` would follow the reader's system setting, but the owner hasn't asked for that.
 - **Browser reach.** `cssTarget` in `astro.config.mjs` (Chrome 100, Firefox 100, Safari 15.4, about early 2022) makes the build rewrite newer CSS for older browsers: `light-dark()` colours become `var()` fallbacks and range queries (`width >= 48rem`) become `min-width`. Write media queries as `min-width` anyway. Before this, the site needed Chrome 123 / Safari 17.5 / Firefox 120 (2024) for colours and Chrome 104 / Safari 16.4 (2023) for the tablet and desktop layouts. Page transitions still need a 2023+ browser (Safari 18 for shared elements) and simply don't animate elsewhere. Never test by eye only: compare `dist` screenshots before and after a CSS change.
 - **Almost no JavaScript.** The only scripts are the search page (Pagefind), `MotionDirector`, Astro's `<ClientRouter />`, and the share buttons (`ShareLinks`). Forms work without JavaScript.
@@ -160,6 +160,7 @@ npm run build     # astro check (must report 0 errors / 0 warnings) + build + pa
 npm run preview
 ```
 
+- **Regression check for refactors:** build, copy `dist` aside, change the code, build again, then serve both and compare full-page screenshots of every page at 390, 820 and 1440 px with `reducedMotion: 'reduce'`. Identical bytes mean nothing changed visually. (The CSS cleanup that cut the stylesheet from 51 KB to 17 KB was verified this way: 81 of 81 identical.)
 - **Preview server:** Astro 7's `astro preview` is a single instance. If one is running, a new call says "already running at …" (check the log for the port). Stop it with `npx astro preview stop`.
 - **Browser:** Chromium and Playwright are preinstalled. Don't run `playwright install`.
 - **Visual checks:**
@@ -184,7 +185,8 @@ src/lib/seo.ts          JSON-LD builders
 src/lib/motion.ts       motion choice, timings, shared names
 src/layouts/BaseLayout  head, skip link, header, main (+ optional sidebar slot), footer, MotionDirector
 src/layouts/PageLayout  single-column text pages (About, policies)
-src/components/         one component per piece of the design (see README table)
+src/components/         one component per piece of the design (see README table); YearSection is the
+                        year heading + spacing shared by the archive and books pages
 src/pages/              [...page] (home), posts/[slug], topics/, topics/[topic], archive/[...page], books, about,
                         search, content-policy, privacy-policy, 404, rss.xml.ts, robots.txt.ts
 public/                 favicon.svg, apple-touch-icon.png, og-default.jpg,
