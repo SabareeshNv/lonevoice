@@ -5,15 +5,17 @@ import RoundButton from './RoundButton.astro';
 
 interface Props {
   page: Page<Post>;
+  /** Accessible name of the navigation. */
+  label?: string;
 }
 
-const { page } = Astro.props;
+const { page, label = 'More posts' } = Astro.props;
 const { prev, next } = page.url;
 ---
 
 {
   (prev || next) && (
-    <nav class="pagination" aria-label="More posts">
+    <nav class="pagination" aria-label={label}>
       {prev && <RoundButton href={prev} icon="arrow-left" text="newer posts" />}
       {next && <RoundButton href={next} icon="arrow-down" text="older posts" />}
     </nav>

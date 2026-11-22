@@ -97,10 +97,10 @@
   :root {
     --text-post-title: 2rem; /* 32 */
     --text-article-title: 2.75rem; /* 44 */
-    --text-brand: 4rem; /* 64 */
+    --text-brand: 3.5rem; /* 56 */
     --text-pivot: 2.5rem; /* 40 */
     --text-page-title: 6rem; /* 96 */
-    --text-display: 11rem; /* 176 */
+    --text-display: 9rem; /* 144 */
     --space-header: 5.5rem; /* 88 */
     --space-post: 2.5rem; /* 40 */
 

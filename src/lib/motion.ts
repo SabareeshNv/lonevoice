@@ -10,6 +10,7 @@ const SECTION_PATHS = ['/', '/topics/', '/archive/', '/about/'];
 export function sectionIndex(url: URL): number | undefined {
   const path = url.pathname.endsWith('/') ? url.pathname : `${url.pathname}/`;
   if (/^\/\d+\/$/.test(path)) return 0; // homepage, page 2, 3…
+  if (/^\/archive\/\d+\/$/.test(path)) return 2; // archive, page 2, 3…
   const index = SECTION_PATHS.indexOf(path);
   return index === -1 ? undefined : index;
 }

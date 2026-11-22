@@ -1,19 +1,43 @@
 ---
-/** Every post, by year and month: one row each with its date and title. */
+/**
+ * Every post, by year and month: one row each with its date and title.
+ * Split into pages once there are more posts than SITE.archivePageSize.
+ */
+import type { GetStaticPaths, Page } from 'astro';
+import Pagination from '@/components/Pagination.astro';
 import Sidebar from '@/components/Sidebar.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { dateParts } from '@/lib/format';
-import { displayTitle, getPosts, groupByYearAndMonth, postUrl } from '@/lib/posts';
+import { displayTitle, getPosts, groupByYearAndMonth, type Post, postUrl } from '@/lib/posts';
+import { SITE } from '@/site.config';
 
-const years = groupByYearAndMonth(await getPosts());
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = await getPosts();
+  // The newest year keeps the bright heading; older years are greyed, on every page.
+  const latestYear = groupByYearAndMonth(posts)[0]?.year;
+  return paginate(posts, { pageSize: SITE.archivePageSize, props: { latestYear } });
+}) satisfies GetStaticPaths;
+
+interface Props {
+  page: Page<Post>;
+  latestYear?: string | number;
+}
+
+const { page, latestYear } = Astro.props;
+const years = groupByYearAndMonth(page.data);
+const first = page.currentPage === 1;
+const title = first ? 'Archive' : `Archive, page ${page.currentPage} of ${page.lastPage}`;
+const description = first
+  ? 'Every post on Lone Voice, by month.'
+  : `Every post on Lone Voice, by month, page ${page.currentPage}.`;
 ---
 
-<BaseLayout title="Archive" description="Every post on Lone Voice, by month.">
+<BaseLayout title={title} description={description}>
   <h1 class="visually-hidden">Archive</h1>
   {
-    years.map(({ year, months }, i) => (
+    years.map(({ year, months }) => (
       <section class="year" aria-labelledby={`year-${year}`}>
-        <h2 id={`year-${year}`} class:list={['year-title', 'feather', { past: i > 0 }]}>
+        <h2 id={`year-${year}`} class:list={['year-title', 'feather', { past: year !== latestYear }]}>
           {year}
         </h2>
         {months.map(({ month, posts }) => (
@@ -39,6 +63,7 @@ const years = groupByYearAndMonth(await getPosts());
       </section>
     ))
   }
+  <Pagination page={page} label="More archive pages" />
   <Sidebar slot="sidebar" />
 </BaseLayout>
 

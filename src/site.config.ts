@@ -24,6 +24,8 @@ export const SITE = {
   timeZone: 'Asia/Kolkata',
   /** Posts per page on the homepage. */
   pageSize: 10,
+  /** Posts per page on the archive. Fewer posts than this stay on one page. */
+  archivePageSize: 20,
   /** Year shown in the footer copyright line. */
   copyrightYear: 2026,
 } as const;

@@ -44,8 +44,8 @@ Project memory for Claude. Read this before changing anything. Keep it current: 
 
 - **Look:** black background, large thin lowercase type, the Windows Phone pivot menu (current item white, others grey), round outlined app-bar buttons, square tiles. Zune magenta accent `#d6006f`, a pink→orange gradient (`--gradient-zune`) and pink/orange weekday colours.
 - **Header** (`SiteHeader`, never animated between pages):
-  - On the homepage, a giant "lone voice" runs off the right edge, with the tagline underneath (`SITE.tagline`, currently "ideas half formed, feelings half named.").
-  - Inner pages have a compact 64 px name.
+  - On the homepage, a giant "lone voice" (144 px on tablet and desktop, trimmed from 176) runs off the right edge, with the tagline underneath (`SITE.tagline`, currently "ideas half formed, feelings half named.").
+  - Inner pages have a compact name (56 px on tablet and desktop).
   - Pink→orange angled shapes (`ZuneArt`) sit behind the name and fade to black on the left. On phones the shapes stay beside the name, clear of the menu.
   - No domain name is shown in the header (the owner asked to remove it).
 - **Menu:** posts · topics · archive · about. There is **no "photos"** item (the owner removed it). On phones the menu scrolls sideways, with a fade at the right edge and a spacer after the last item.
@@ -68,7 +68,7 @@ Project memory for Claude. Read this before changing anything. Keep it current: 
   - **Titles and text:** titles are 32 px bold. Summaries are a softer grey (`--color-body`). Notes are 19 px regular.
   - **Footer row:** tags (pink, no boxes) sit on the left and "continue reading →" (**white**, not pink) on the right edge, in one row. The owner found the stacked, same-coloured version cluttered.
   - Hairlines separate posts.
-- **Other pages:** post (44 px title, prose, older/newer links), topics (tiles ordered by post count, then name; the first gets the gradient, the second magenta, the 1st and 7th are double width; 2 columns on phones, 3 on tablet, 4 on desktop; `grid-auto-flow: dense` lets small tiles fill gaps beside wide ones; has the sidebar, like the homepage and archive, at the owner's request), single topic, archive (year → month → rows), about, search, content and privacy policies (one shared layout), 404.
+- **Other pages:** post (44 px title, prose, older/newer links), topics (tiles ordered by post count, then name; the first gets the gradient, the second magenta, the 1st and 7th are double width; 2 columns on phones, 3 on tablet, 4 on desktop; `grid-auto-flow: dense` lets small tiles fill gaps beside wide ones; has the sidebar, like the homepage and archive, at the owner's request), single topic, archive (year → month → rows; paginated at `SITE.archivePageSize`, 20, so `/archive/`, `/archive/2/`…; one page until there are more posts than that), about, search, content and privacy policies (one shared layout), 404.
 - **Footer:** an oversized faint "lone voice", the copyright line, and Content Policy / Privacy Policy links.
 
 ## Content model (`src/content.config.ts`)
@@ -96,7 +96,7 @@ Built on Astro's `<ClientRouter />` (in `BaseHead.astro`), so pages swap without
 | `src/styles/motion.css` | All CSS timings as tokens at the top, plus the keyframes for pivot, feather, continuum, tagline and search button |
 
 **The motions:**
-- **Pivot:** between menu sections (`/`, `/N/`, `/topics/`, `/archive/`, `/about/`). The main column slides sideways in the direction of the menu, and the old sidebar fades. Items don't feather during a pivot.
+- **Pivot:** between menu sections (`/`, `/N/`, `/topics/`, `/archive/`, `/archive/N/`, `/about/`). The main column slides sideways in the direction of the menu, and the old sidebar fades. Items don't feather during a pivot.
 - **Turnstile:** every other navigation.
   - **Exit:** the visible items swing away one by one on a left-edge hinge, using the Web Animations API inside an overridden `event.loader`, in parallel with loading the next page.
   - **Entry:** the old column fades; the new column appears at once and its items **feather** in.
@@ -164,7 +164,7 @@ npm run preview
 
 ```
 src/site.config.ts      SITE (title, tagline, intro, url, publisher, socialImage, lang, locale,
-                        timeZone Asia/Kolkata, pageSize 10, copyrightYear), NAV, LEGAL_LINKS
+                        timeZone Asia/Kolkata, pageSize 10, archivePageSize 20, copyrightYear), NAV, LEGAL_LINKS
 src/content.config.ts   post schema
 src/lib/posts.ts        getPosts, isPhoto/isNote, excerpt/summary/displayTitle, topics, pinned,
                         archive grouping, linkHost
@@ -174,7 +174,7 @@ src/lib/motion.ts       motion choice, timings, shared names
 src/layouts/BaseLayout  head, skip link, header, main (+ optional sidebar slot), footer, MotionDirector
 src/layouts/PageLayout  single-column text pages (About, policies)
 src/components/         one component per piece of the design (see README table)
-src/pages/              [...page] (home), posts/[slug], topics/, topics/[topic], archive, about,
+src/pages/              [...page] (home), posts/[slug], topics/, topics/[topic], archive/[...page], about,
                         search, content-policy, privacy-policy, 404, rss.xml.ts, robots.txt.ts
 public/                 favicon.svg, apple-touch-icon.png, og-default.jpg,
                         _headers (cache rules: `/_astro/*` immutable for a year; fixed-name images 1 day;
