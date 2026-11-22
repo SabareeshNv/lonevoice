@@ -85,7 +85,7 @@ Each post is a Markdown file in `src/content/posts/`. The file name becomes the 
   - neither → note (shown in full on the timeline)
   - `link` works with any kind (the card goes under the text)
 - **Cover images** live in `src/assets/covers/`. Astro resizes them.
-- **Sample content is placeholder.** The 10 sample posts, the 3 generated cover images, the About text, both policies (`[bracketed]` text) and `SITE.intro` all need replacing by the owner. The sample "Starting this blog" post is marked `pinned`.
+- **Sample content is placeholder.** The 10 sample posts and the 3 generated cover images need replacing by the owner. The About, Content Policy and Privacy Policy texts were drafted by Claude from how the site really works (no cookies or storage, no analytics, only same-site requests, share buttons act only when tapped, hosted on Cloudflare Pages, no comments or ads); the owner should review them. They are statements of fact and promises, so update them (and the `updated` date at the top of each policy) whenever the site changes, for example if analytics, comments or ads are ever added. The sample "Starting this blog" post is marked `pinned`.
 
 ## Books page (`src/pages/books.astro`)
 
