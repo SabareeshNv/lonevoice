@@ -35,7 +35,7 @@ Project memory for Claude. Read this before changing anything. Keep it current: 
 
   The owner expects mobile, tablet and desktop to be distinct. Don't add another size without asking; a large-desktop or small-phone size has been offered but not chosen.
 - **Tokens only.** Colours, font sizes, spacing and widths come from `src/styles/tokens.css`. Never hard-code a value a token exists for. Some tokens change value at 48rem, so components often need no media query.
-- **English interface**, Open Sans 300/400/600 (via `@fontsource/open-sans`), self-hosted. Only the `latin`, `latin-ext`, `math` and `symbols` alphabets are imported in `BaseHead.astro` (the last two hold the ← → arrows, so they must stay). Importing the whole package added about 25 KB of Cyrillic, Greek, Hebrew and Vietnamese rules to every page's CSS for nothing. Text in those alphabets falls back to the system font; to support one, import its `<name>-<weight>.css` files.
+- **English interface**, Open Sans 300/400/600 (via `@fontsource/open-sans`), self-hosted. **The owner decided Open Sans is the right font for this project** (November 2026, after a Segoe-style alternative was suggested): don't propose another. Only the `latin`, `latin-ext`, `math` and `symbols` alphabets are imported in `BaseHead.astro` (the last two hold the ← → arrows, so they must stay). Importing the whole package added about 25 KB of Cyrillic, Greek, Hebrew and Vietnamese rules to every page's CSS for nothing. Text in those alphabets falls back to the system font; to support one, import its `<name>-<weight>.css` files.
 - **Colour roles:** magenta (`--color-accent`, `--color-accent-deep`, `--color-tile-warm`) for fills and tiles, pink (`--color-accent-text`) for text links and tags, orange (`--color-orange`) for dates (the weekday is always orange). There is no third pink.
 - **Weights:** the giant and display type (wordmark, page and year headings, menu, day numbers, quotes) is Open Sans 300. Small text (under about 20 px: the lede, "share", "subscribe with RSS") is 400, because hairline strokes shimmer on black.
 - **Casing:** interface text is lowercase (menu, sidebar headings, "follow along", footer links, page titles via `PageIntro`). The owner's own post titles and headings keep the case they are written in. "RSS" stays capitals.
@@ -212,5 +212,4 @@ public/                 favicon.svg, apple-touch-icon.png, og-default.jpg,
   - A Git-based CMS (Pages CMS or Decap) for writing from a phone.
   - A light theme switch.
   - Cloudflare Web Analytics (cookie-free; would need a privacy-policy mention).
-  - A Segoe-style open-source font (Selawik) in place of Open Sans, for a more authentic Windows Phone feel. Not tried: it isn't on npm and couldn't be loaded when tested, so test it on a branch before deciding.
 - **Rejected:** comments, comment counts, reading time, a "photos" section, sidebar copies of menu items, "recent covers", a personal name or photo, Tailwind.
