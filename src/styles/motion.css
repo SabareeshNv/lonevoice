@@ -129,12 +129,23 @@ html[data-motion^='pivot']::view-transition-old(sidebar) {
   animation-timing-function: var(--ease-out-quint);
 }
 
-/* A cover grows from thumbnail to full width as one image, cropped to the box. */
+/*
+ * A cover grows from thumbnail to full width as one image, cropped to the box.
+ * The box must clip: the two pictures have different shapes (the card's is wider and
+ * shorter), and without a clip the taller one pokes out above and below the box,
+ * which showed as a stepped, jumping edge during the flight.
+ */
+::view-transition-image-pair(*.cover) {
+  overflow: clip;
+}
+
 ::view-transition-old(*.cover) {
   display: none;
 }
 
 ::view-transition-new(*.cover) {
+  inset: 0;
+  width: 100%;
   height: 100%;
   object-fit: cover;
   animation: none;
@@ -149,6 +160,8 @@ html[data-motion^='pivot']::view-transition-old(sidebar) {
 ::view-transition-old(*.scrimmed) {
   display: block;
   z-index: 1; /* above the new image (which is opaque), so its fade-out can be seen */
+  inset: 0 !important;
+  width: 100% !important;
   height: 100% !important;
   object-fit: cover !important;
   mix-blend-mode: normal !important;
