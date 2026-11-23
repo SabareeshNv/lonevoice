@@ -186,9 +186,10 @@ const schema = [
     view-transition-class: cover scrimmed;
   }
 
+  /* The same shape as the card's cover, so the picture is never re-cropped (zoomed) while it flies. */
   .cover :global(img) {
     width: 100%;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: var(--ratio-card);
     object-fit: cover;
   }
 
