@@ -13,9 +13,11 @@ import { SITE } from '@/site.config';
 
 interface Props extends SeoProps {
   header?: 'home' | 'page';
+  /** Moves the sidebar up or down so its first line lines up with the page's (a CSS length). */
+  sidebarOffset?: string;
 }
 
-const { header = 'page', ...seo } = Astro.props;
+const { header = 'page', sidebarOffset, ...seo } = Astro.props;
 const hasSidebar = Astro.slots.has('sidebar');
 ---
 
@@ -33,7 +35,13 @@ const hasSidebar = Astro.slots.has('sidebar');
       </main>
       {
         hasSidebar && (
-          <aside class="sidebar" aria-label={`More from ${SITE.title}`} transition:name="sidebar" transition:animate="none">
+          <aside
+            class="sidebar"
+            aria-label={`More from ${SITE.title}`}
+            style={sidebarOffset ? `--sidebar-offset: ${sidebarOffset}` : undefined}
+            transition:name="sidebar"
+            transition:animate="none"
+          >
             <slot name="sidebar" />
           </aside>
         )
@@ -90,7 +98,7 @@ const hasSidebar = Astro.slots.has('sidebar');
     .sidebar {
       position: sticky;
       top: var(--space-l);
-      margin-block-start: 0;
+      margin-block-start: var(--sidebar-offset, 0);
     }
 
     /*

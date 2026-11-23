@@ -3,25 +3,23 @@
  * The date of a post.
  * - Phones: one small line, “21 NOV 2026 · SAT”, so the title gets the width.
  * - Tablets and up: the Zune date block, a stack of NOV / 21 / SAT / 2026.
- * The weekday alternates orange and pink down the timeline.
+ * The weekday is always orange.
  */
 import { dateParts, fullDate } from '@/lib/format';
 
 interface Props {
   date: Date;
   href?: string;
-  /** Position in the list, used to alternate the weekday colour. */
-  index?: number;
   /** On a timeline: may be given a shared name at navigation time. */
   continuum?: boolean;
 }
 
-const { date, href, index = 0, continuum = false } = Astro.props;
+const { date, href, continuum = false } = Astro.props;
 const { day, month, weekday, year } = dateParts(date);
 const Tag = href ? 'a' : 'div';
 ---
 
-<Tag class:list={['date', index % 2 ? 'pink' : 'orange']} href={href} data-continuum={continuum ? 'date' : undefined}>
+<Tag class="date" href={href} data-continuum={continuum ? 'date' : undefined}>
   <time datetime={date.toISOString()}>
     <span class="visually-hidden">{fullDate(date)}</span>
     <span class="parts" aria-hidden="true">
@@ -67,12 +65,8 @@ const Tag = href ? 'a' : 'div';
     content: '· ';
   }
 
-  .orange .weekday {
+  .weekday {
     color: var(--color-orange);
-  }
-
-  .pink .weekday {
-    color: var(--color-pink);
   }
 
   /* Tablets and up: the vertical Zune date block. */
@@ -89,6 +83,7 @@ const Tag = href ? 'a' : 'div';
       margin: var(--space-3xs) 0 var(--space-3xs) -0.05em;
       font-size: var(--text-date-day);
       font-weight: var(--weight-light);
+      color: var(--color-body);
       line-height: 1;
       letter-spacing: -0.05em;
     }

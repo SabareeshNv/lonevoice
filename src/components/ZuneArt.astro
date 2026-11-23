@@ -56,22 +56,33 @@ const { size = 'small' } = Astro.props;
   }
 
   .large svg {
-    width: 19rem;
+    width: 24rem;
     height: 15rem;
+    right: -5rem;
   }
 
+  /* Tablet and desktop: the shapes sweep out from behind the end of the name. */
   @media (min-width: 48rem) {
-    svg {
-      width: 32rem;
-      height: 19rem;
-      right: -4rem;
+    .small svg {
+      width: 60rem;
+      height: 26rem;
+      top: -3.5rem;
+      right: -8rem;
     }
 
     .large svg {
-      width: 47rem;
-      height: 35rem;
-      top: -2.5rem;
-      right: -5rem;
+      width: 76rem;
+      height: 38rem;
+      top: -4rem;
+      right: -8rem;
+    }
+
+    .small::after {
+      background: linear-gradient(90deg, var(--color-bg) 8%, transparent 44%);
+    }
+
+    .large::after {
+      background: linear-gradient(90deg, var(--color-bg) 6%, transparent 40%);
     }
   }
 </style>

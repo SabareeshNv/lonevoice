@@ -27,7 +27,7 @@ const { Content } = !title ? await render(post) : { Content: null };
 ---
 
 <article class="post feather" style={`--i: ${index}`} data-post-id={post.id}>
-  <PostDate date={date} index={index} continuum />
+  <PostDate date={date} continuum />
   <div class="body">
     {
       title ? (

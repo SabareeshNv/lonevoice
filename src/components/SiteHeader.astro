@@ -75,10 +75,13 @@ const NameTag = variant === 'home' ? 'h1' : 'p';
     letter-spacing: -0.04em;
   }
 
+  /* On phones the tagline wraps in two even lines, clear of the shapes. */
   .tagline {
+    max-width: 14rem;
     margin-block-start: var(--space-2xs);
     font-size: var(--text-l);
     font-weight: var(--weight-light);
+    text-wrap: balance;
     color: var(--color-muted);
   }
 
@@ -119,6 +122,7 @@ const NameTag = variant === 'home' ? 'h1' : 'p';
     }
 
     .tagline {
+      max-width: none;
       font-size: 1.25rem;
     }
 

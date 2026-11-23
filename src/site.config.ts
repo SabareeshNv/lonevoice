@@ -40,7 +40,7 @@ export const NAV = [
 
 /** The small links in the footer, in order. */
 export const FOOTER_LINKS = [
-  { label: 'About', href: '/about/' },
-  { label: 'Content Policy', href: '/content-policy/' },
-  { label: 'Privacy Policy', href: '/privacy-policy/' },
+  { label: 'about', href: '/about/' },
+  { label: 'content policy', href: '/content-policy/' },
+  { label: 'privacy policy', href: '/privacy-policy/' },
 ] as const;

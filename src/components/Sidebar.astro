@@ -35,15 +35,20 @@ const pinned = await getPinned();
     gap: var(--space-m);
   }
 
+  /* A quiet line of type under a short magenta rule, not a loud tile. */
   .intro {
-    display: flex;
-    align-items: flex-start;
-    min-height: var(--size-side-tile);
-    padding: var(--space-s);
-    background: var(--color-accent);
-    color: var(--color-on-accent);
-    font-size: var(--text-side-tile);
+    font-size: var(--text-intro);
     font-weight: var(--weight-light);
-    line-height: 1.3;
+    line-height: 1.45;
+    color: var(--color-body);
+  }
+
+  .intro::before {
+    content: '';
+    display: block;
+    width: 1.75rem;
+    height: 0.1875rem;
+    margin-block-end: var(--space-xs);
+    background: var(--color-accent);
   }
 </style>

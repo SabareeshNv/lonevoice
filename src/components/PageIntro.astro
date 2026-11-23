@@ -35,13 +35,14 @@ const { title, lede, back, hidden = false } = Astro.props;
     font-weight: var(--weight-light);
     line-height: 1.05;
     letter-spacing: var(--tracking-display);
+    text-transform: lowercase; /* interface text is lowercase */
     overflow-wrap: anywhere;
   }
 
   .lede {
     margin-block-start: var(--space-xs);
     font-size: var(--text-m);
-    font-weight: var(--weight-light);
+    font-weight: var(--weight-regular);
     color: var(--color-muted);
   }
 

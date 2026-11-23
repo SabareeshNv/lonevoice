@@ -37,7 +37,7 @@ const description = first
   : `Every post on Lone Voice, by month, page ${page.currentPage}.`;
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} sidebarOffset="calc(-1 * var(--space-s))">
   <h1 class="visually-hidden">Posts</h1>
   {
     years.map(({ year, months }) => (

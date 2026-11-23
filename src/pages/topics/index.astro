@@ -19,7 +19,7 @@ const count = (n: number) => `${n} ${n === 1 ? 'post' : 'posts'}`;
     {
       topics.map((topic, i) => (
         <li
-          class:list={['tile', 'feather', { wide: i === 0 || i === 6, featured: i === 0, accent: i === 1 }]}
+          class:list={['tile', 'feather', { wide: i === 0, featured: i === 0, accent: i === 1, deep: i === 2, warm: i === 3 }]}
           style={`--i: ${i}`}
         >
           <a href={tagUrl(topic.name)}>
@@ -73,6 +73,16 @@ const count = (n: number) => `${n} ${n === 1 ? 'post' : 'posts'}`;
     color: var(--color-on-accent);
   }
 
+  .deep a {
+    background: var(--color-accent-deep);
+    color: var(--color-on-accent);
+  }
+
+  .warm a {
+    background: var(--color-tile-warm);
+    color: var(--color-on-accent);
+  }
+
   .count {
     font-size: var(--text-2xs);
     font-weight: var(--weight-bold);
@@ -80,7 +90,9 @@ const count = (n: number) => `${n} ${n === 1 ? 'post' : 'posts'}`;
   }
 
   .featured .count,
-  .accent .count {
+  .accent .count,
+  .deep .count,
+  .warm .count {
     color: inherit;
   }
 

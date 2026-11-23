@@ -27,11 +27,12 @@
   --color-line: light-dark(#e0e0e0, #2e2e2e);
   --color-tile: light-dark(#ededed, #1a1a1a);
   --color-ghost: light-dark(#ededed, #1f1f1f);
-  --color-accent: #d6006f; /* Zune magenta: tiles, buttons */
+  --color-accent: #d6006f; /* Zune magenta: fills (tiles, buttons) */
+  --color-accent-deep: #8f004a; /* deep magenta: topic tiles */
+  --color-tile-warm: #b84200; /* burnt orange: topic tiles */
   --color-on-accent: #fff;
   --color-accent-text: light-dark(#d6006f, #ff5cae); /* links, tags */
   --color-orange: light-dark(#b84200, #ff8a1f);
-  --color-pink: light-dark(#b0005a, #ff4fa3);
   --gradient-zune: linear-gradient(125deg, #8f004a 0%, #d6006f 50%, #f25c05 100%);
 
   /* Type */
@@ -53,7 +54,8 @@
   --text-post-title: 1.5rem; /* 24 */
   --text-article-title: 1.75rem; /* 28 */
   --text-brand: 2.5rem; /* 40 — compact header name */
-  --text-pivot: 1.75rem; /* 28 — menu */
+  --text-pivot: 1.5rem; /* 24 — menu: small enough that all four items fit on a phone */
+  --text-intro: 1.25rem; /* 20 — the home intro line */
   --text-page-title: 3.5rem; /* 56 */
   --text-display: 5.25rem; /* 84 — homepage name */
 
@@ -88,7 +90,7 @@
 
   /* Timeline and sidebar sizes that differ between tablet and desktop. */
   --size-date-column: 6rem; /* 96 — date block column (tablet and up) */
-  --text-date-day: 3.75rem; /* 60 — the big day number */
+  --text-date-day: 2.5rem; /* 40 — the day number */
   --space-post-gutter: var(--space-l); /* between divider and post text */
   --ratio-thumb: 1; /* cover thumbnail shape: square on phones and tablets */
   --text-side-heading: var(--text-3xl); /* sidebar headings: search, pinned */
@@ -114,7 +116,6 @@
     --width-side: 15rem; /* 240 */
     --gap-columns: 2rem; /* 32 */
     --size-date-column: 5rem; /* 80 */
-    --text-date-day: 3rem; /* 48 */
     --space-post-gutter: 1.25rem; /* 20 */
     --text-side-heading: 1.625rem; /* 26 */
     --text-side-tile: 1.25rem; /* 20 */
@@ -128,11 +129,10 @@
     --text-post-title: 2rem; /* 32 */
     --text-article-title: 2.75rem; /* 44 */
     --size-thumb: 15rem; /* 240 */
-    --ratio-thumb: 24 / 17; /* 240 × 170 */
+    --ratio-thumb: 16 / 9; /* 240 × 135 */
     --width-side: 20rem; /* 320 */
     --gap-columns: 4rem; /* 64 */
     --size-date-column: 6rem; /* 96 */
-    --text-date-day: 3.75rem; /* 60 */
     --space-post-gutter: var(--space-l); /* 32 */
     --text-side-heading: var(--text-3xl); /* 30 */
     --text-side-tile: var(--text-2xl); /* 24 */
