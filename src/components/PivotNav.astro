@@ -6,12 +6,12 @@
 import { NAV } from '@/site.config';
 
 /**
- * Which menu item the current URL belongs to: the first segment of the URL,
- * with two exceptions. Home's later pages (/2/, /3/…) belong to "home", and a
- * single post (/posts/<name>/) belongs to the "posts" item, which lists them.
+ * Which menu item the current URL belongs to: the first segment of the URL
+ * (so /posts/<name>/ belongs to "posts"), except that home's later pages
+ * (/2/, /3/…) belong to "home".
  */
 const first = Astro.url.pathname.split('/').filter(Boolean)[0] ?? '';
-const section = /^\d+$/.test(first) ? '' : first === 'posts' ? 'archive' : first;
+const section = /^\d+$/.test(first) ? '' : first;
 const isCurrent = (match: string) => section === match;
 ---
 

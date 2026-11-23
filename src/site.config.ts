@@ -24,7 +24,7 @@ export const SITE = {
   timeZone: 'Asia/Kolkata',
   /** Posts per page on the homepage. */
   pageSize: 10,
-  /** Posts per page on the posts page (/archive/). Fewer posts than this stay on one page. */
+  /** Posts per page on the posts page (/posts/). Fewer posts than this stay on one page. */
   archivePageSize: 20,
   /** Year shown in the footer copyright line. */
   copyrightYear: 2026,
@@ -34,7 +34,7 @@ export const SITE = {
 export const NAV = [
   { label: 'home', href: '/', match: '' },
   { label: 'topics', href: '/topics/', match: 'topics' },
-  { label: 'posts', href: '/archive/', match: 'archive' },
+  { label: 'posts', href: '/posts/', match: 'posts' },
   { label: 'books', href: '/books/', match: 'books' },
 ] as const;
 

@@ -4,13 +4,13 @@
  */
 
 /** The menu sections in order; moving between them is a sideways pivot. */
-const SECTION_PATHS = ['/', '/topics/', '/archive/', '/books/'];
+const SECTION_PATHS = ['/', '/topics/', '/posts/', '/books/'];
 
 /** Position of a URL in the menu, or undefined if it isn't a section page. */
 export function sectionIndex(url: URL): number | undefined {
   const path = url.pathname.endsWith('/') ? url.pathname : `${url.pathname}/`;
   if (/^\/\d+\/$/.test(path)) return 0; // homepage, page 2, 3…
-  if (/^\/archive\/\d+\/$/.test(path)) return 2; // archive, page 2, 3…
+  if (/^\/posts\/\d+\/$/.test(path)) return 2; // the posts list, page 2, 3… (a single post is /posts/<name>/)
   const index = SECTION_PATHS.indexOf(path);
   return index === -1 ? undefined : index;
 }

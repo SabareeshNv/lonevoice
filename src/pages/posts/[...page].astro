@@ -1,7 +1,8 @@
 ---
 /**
- * Every post, by year and month: one row each with its date and title.
- * Split into pages once there are more posts than SITE.archivePageSize.
+ * The posts page (/posts/): every post, by year and month, one row each with
+ * its date and title. Split into pages (/posts/2/…) once there are more posts
+ * than SITE.archivePageSize. A single post lives at /posts/<name>/ (see [slug].astro).
  */
 import type { GetStaticPaths, Page } from 'astro';
 import Pagination from '@/components/Pagination.astro';
@@ -14,6 +15,9 @@ import { SITE } from '@/site.config';
 
 export const getStaticPaths = (async ({ paginate }) => {
   const posts = await getPosts();
+  // /posts/2/ is page 2 of this list, so a post can't be named with digits only.
+  const clash = posts.find((post) => /^\d+$/.test(post.id));
+  if (clash) throw new Error(`The post file "${clash.id}.md" is named with digits only, which clashes with the page numbers of /posts/. Give it a name with letters, such as "${clash.id}-note.md".`);
   // The newest year keeps the bright heading; older years are greyed, on every page.
   const latestYear = groupByYearAndMonth(posts)[0]?.year;
   return paginate(posts, { pageSize: SITE.archivePageSize, props: { latestYear } });

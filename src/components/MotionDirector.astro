@@ -21,7 +21,8 @@
   type Part = keyof typeof shared;
 
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-  const POST_PATH = /^\/posts\/([^/]+)\/?$/;
+  // /posts/<name>/ is a post; /posts/2/ is page 2 of the list, so digits-only names don't count.
+  const POST_PATH = /^\/posts\/(?!\d+\/?$)([^/]+)\/?$/;
   const postIdOf = (url: URL) => url.pathname.match(POST_PATH)?.[1];
 
   /* ---------- Names ---------- */

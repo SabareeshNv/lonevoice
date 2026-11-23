@@ -1,0 +1,4 @@
+# The posts page used to live at /archive/. Send old links and bookmarks to /posts/.
+/archive /posts/ 301
+/archive/ /posts/ 301
+/archive/* /posts/:splat 301

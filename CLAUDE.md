@@ -49,7 +49,7 @@ Project memory for Claude. Read this before changing anything. Keep it current: 
   - Inner pages have a compact name (56 px on tablet and desktop).
   - Pink→orange angled shapes (`ZuneArt`) sit behind the name and fade to black on the left. On phones the shapes stay beside the name, clear of the menu.
   - No domain name is shown in the header (the owner asked to remove it).
-- **Menu:** home · topics · posts · books. "posts" is the page at `/archive/` that lists every post by month (the URL and file name kept their old name, "archive"). A single post page highlights "posts"; home's later pages (`/2/`…) highlight "home" (`PivotNav`). There is **no "photos"** item (the owner removed it) and **no "about"** item: About lives in the footer (the owner asked for that). `FOOTER_LINKS` in `src/site.config.ts` lists the footer links: About, Content Policy, Privacy Policy. On phones the menu scrolls sideways, with a fade at the right edge and a spacer after the last item. **Known problem:** the four items do NOT fit on a phone. They run to 370 px whatever the screen width, so "books" sits partly in the right-edge fade on a 375–412 px phone and is cut off on 320–360 px phones (they only clear the fade from about 420 px). Fixing it needs smaller menu type or tighter gaps on phones, and ideally a script that scrolls the current item into view.
+- **Menu:** home · topics · posts · books. "posts" is the page at `/posts/` that lists every post by month (page 2 onward: `/posts/2/`…). A single post is `/posts/<name>/` and highlights "posts" too; home's later pages (`/2/`…) highlight "home" (`PivotNav`). There is **no "photos"** item (the owner removed it) and **no "about"** item: About lives in the footer (the owner asked for that). `FOOTER_LINKS` in `src/site.config.ts` lists the footer links: About, Content Policy, Privacy Policy. On phones the menu scrolls sideways, with a fade at the right edge and a spacer after the last item. **Known problem:** the four items do NOT fit on a phone. They run to 370 px whatever the screen width, so "books" sits partly in the right-edge fade on a 375–412 px phone and is cut off on 320–360 px phones (they only clear the fade from about 420 px). Fixing it needs smaller menu type or tighter gaps on phones, and ideally a script that scrolls the current item into view.
 - **Search button** (round, in the header): shown on phones; on tablet and desktop only on pages without a sidebar (the sidebar has a search box).
 - **Layout:**
   - Desktop has two columns: the main column (760 px) and a sticky sidebar (320 px), 64 px apart, 1200 px maximum width.
@@ -70,7 +70,7 @@ Project memory for Claude. Read this before changing anything. Keep it current: 
   - **Titles and text:** titles are 32 px bold. Summaries are a softer grey (`--color-body`). Notes are 19 px regular.
   - **Footer row:** tags (pink, no boxes) sit on the left and "continue reading →" (**white**, not pink) on the right edge, in one row. Every post has this row: notes and photo posts, which have no title and are shown in full, get "view post →" in the same place so each one can be opened. The owner found the stacked, same-coloured version cluttered.
   - Hairlines separate posts.
-- **Other pages:** post (44 px title, prose, older/newer links), topics (tiles ordered by post count, then name; the first gets the gradient, the second magenta, the 1st and 7th are double width; 2 columns on phones, 3 on tablet, 4 on desktop; `grid-auto-flow: dense` lets small tiles fill gaps beside wide ones; has the sidebar, like the homepage and archive, at the owner's request), **books** (see below), single topic, posts page at `/archive/` (year → month → rows; paginated at `SITE.archivePageSize`, 20, so `/archive/`, `/archive/2/`…; one page until there are more posts than that), about, search, content and privacy policies (one shared layout), 404.
+- **Other pages:** post (44 px title, prose, older/newer links), topics (tiles ordered by post count, then name; the first gets the gradient, the second magenta, the 1st and 7th are double width; 2 columns on phones, 3 on tablet, 4 on desktop; `grid-auto-flow: dense` lets small tiles fill gaps beside wide ones; has the sidebar, like the homepage and archive, at the owner's request), **books** (see below), single topic, posts page at `/posts/` (year → month → rows; paginated at `SITE.archivePageSize`, 20, so `/posts/`, `/posts/2/`…; one page until there are more posts than that; it used to be `/archive/`, which `public/_redirects` sends to `/posts/` with a 301 on Cloudflare), about, search, content and privacy policies (one shared layout), 404.
 - **Footer:** an oversized faint "lone voice", the copyright line, and About / Content Policy / Privacy Policy links.
 
 ## Content model (`src/content.config.ts`)
@@ -84,6 +84,7 @@ Each post is a Markdown file in `src/content/posts/`. The file name becomes the 
   - cover without a title → photo post (full-width picture)
   - neither → note (shown in full on the timeline)
   - `link` works with any kind (the card goes under the text)
+- **Post file names can't be only digits** (`5.md`): `/posts/5/` would be page 5 of the posts list. The build stops with a clear message if one appears. `MotionDirector` also ignores digits-only names when it recognises a post page.
 - **Cover images** live in `src/assets/covers/`. Astro resizes them.
 - **Sample content is placeholder.** The 10 sample posts and the 3 generated cover images need replacing by the owner. The About, Content Policy and Privacy Policy texts were drafted by Claude from how the site really works (no cookies or storage, no analytics, only same-site requests, share buttons act only when tapped, hosted on Cloudflare Pages, no comments or ads); the owner should review them. They are statements of fact and promises, so update them (and the `updated` date at the top of each policy) whenever the site changes, for example if analytics, comments or ads are ever added. The sample "Starting this blog" post is marked `pinned`.
 
@@ -107,7 +108,7 @@ Built on Astro's `<ClientRouter />` (in `BaseHead.astro`), so pages swap without
 | `src/styles/motion.css` | All CSS timings as tokens at the top, plus the keyframes for pivot, feather, continuum, tagline and search button |
 
 **The motions:**
-- **Pivot:** between menu sections (`/`, `/N/`, `/topics/`, `/archive/`, `/archive/N/`, `/books/`); About and the policies are footer pages, so they use the turnstile. The main column slides sideways in the direction of the menu, and the old sidebar fades. Items don't feather during a pivot.
+- **Pivot:** between menu sections (`/`, `/N/`, `/topics/`, `/posts/`, `/posts/N/`, `/books/`); About and the policies are footer pages, so they use the turnstile. The main column slides sideways in the direction of the menu, and the old sidebar fades. Items don't feather during a pivot.
 - **Turnstile:** every other navigation.
   - **Exit:** the visible items swing away one by one on a left-edge hinge, using the Web Animations API inside an overridden `event.loader`, in parallel with loading the next page.
   - **Entry:** the old column fades; the new column appears at once and its items **feather** in.
@@ -188,10 +189,10 @@ src/layouts/BaseLayout  head, skip link, header, main (+ optional sidebar slot),
 src/layouts/PageLayout  single-column text pages (About, policies)
 src/components/         one component per piece of the design (see README table); YearSection is the
                         year heading + spacing shared by the archive and books pages
-src/pages/              [...page] (home), posts/[slug], topics/, topics/[topic], archive/[...page], books, about,
+src/pages/              [...page] (home), posts/[slug] (one post), posts/[...page] (the posts list), topics/, topics/[topic], books, about,
                         search, content-policy, privacy-policy, 404, rss.xml.ts, robots.txt.ts
 public/                 favicon.svg, apple-touch-icon.png, og-default.jpg,
-                        _headers (cache rules: `/_astro/*` immutable for a year; fixed-name images 1 day;
+                        _redirects (old /archive/ → /posts/, 301), _headers (cache rules: `/_astro/*` immutable for a year; fixed-name images 1 day;
                         `/pagefind/*` always revalidate)
 ```
 
