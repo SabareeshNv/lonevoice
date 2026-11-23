@@ -69,12 +69,17 @@ const schema = [
       <PostDate date={date} />
     </div>
     <div class="body">
-      <header class="head feather" style="--i: 1">
-        {/* Only a real title flies; a note's hidden heading must not get a name. */}
+      <header class="head">
+        {/*
+          Only a real title flies; a note's hidden heading must not get a name. The title
+          turns in by itself (not inside a turning block): a flying title takes on its
+          parent's turn as the pose it lands in, and arrived tilted and squashed.
+        */}
         {
           title ? (
             <h1
-              class="title"
+              class="title feather"
+              style="--i: 1"
               data-pagefind-meta="title"
               data-flight={shared.title(post.id)}
               transition:name={shared.title(post.id)}
@@ -89,12 +94,12 @@ const schema = [
         }
         {
           updated && (
-            <p class="updated" data-pagefind-ignore>
+            <p class="updated feather" style="--i: 1" data-pagefind-ignore>
               updated <time datetime={updated.toISOString()}>{shortDate(updated)}</time>
             </p>
           )
         }
-        <div data-pagefind-ignore><TagList tags={tags} /></div>
+        <div class="feather" style="--i: 1" data-pagefind-ignore><TagList tags={tags} /></div>
       </header>
       {
         cover && (
