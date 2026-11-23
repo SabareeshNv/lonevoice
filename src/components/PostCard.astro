@@ -8,6 +8,7 @@
 import { Image } from 'astro:assets';
 import { render } from 'astro:content';
 import { fullDate } from '@/lib/format';
+import { COVER_SIZES, COVER_WIDTHS } from '@/lib/images';
 import { isPhoto, postUrl, summary, type Post } from '@/lib/posts';
 import Icon from './Icon.astro';
 import LinkCard from './LinkCard.astro';
@@ -38,14 +39,14 @@ const { Content } = !title ? await render(post) : { Content: null };
           <p class="summary">{summary(post)}</p>
           {cover && (
             <a class="thumb" href={url} tabindex="-1" aria-hidden="true" data-continuum="cover">
-              <Image src={cover} alt="" width={480} />
+              <Image src={cover} alt="" width={1280} widths={COVER_WIDTHS} sizes={COVER_SIZES} />
             </a>
           )}
         </div>
       ) : photo && cover ? (
         <>
           <a class="photo" href={url} data-continuum="cover">
-            <Image src={cover} alt={coverAlt ?? ''} width={1200} />
+            <Image src={cover} alt={coverAlt ?? ''} width={1280} widths={COVER_WIDTHS} sizes={COVER_SIZES} />
           </a>
           <div class="caption">{Content && <Content />}</div>
         </>

@@ -11,6 +11,7 @@ import TagList from '@/components/TagList.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { shortDate } from '@/lib/format';
 import { shared } from '@/lib/motion';
+import { COVER_SIZES, COVER_WIDTHS } from '@/lib/images';
 import { displayTitle, getPosts, postUrl, summary, type Post } from '@/lib/posts';
 import { breadcrumbSchema, postSchema } from '@/lib/seo';
 import { SITE } from '@/site.config';
@@ -103,7 +104,7 @@ const schema = [
             data-flight={shared.cover(post.id)}
             transition:name={shared.cover(post.id)}
           >
-            <Image src={cover} alt={coverAlt ?? ''} width={1200} loading="eager" />
+            <Image src={cover} alt={coverAlt ?? ''} width={1280} widths={COVER_WIDTHS} sizes={COVER_SIZES} loading="eager" />
           </div>
         )
       }
