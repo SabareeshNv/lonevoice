@@ -32,12 +32,10 @@ const { Content } = !title ? await render(post) : { Content: null };
     {
       title ? (
         <div class:list={['titled', { 'has-thumb': cover }]}>
-          <div class="text">
-            <h2 class="title" data-continuum="title">
-              <a class="tap" href={url}>{title}</a>
-            </h2>
-            <p class="summary">{summary(post)}</p>
-          </div>
+          <h2 class="title" data-continuum="title">
+            <a class="tap" href={url}>{title}</a>
+          </h2>
+          <p class="summary">{summary(post)}</p>
           {cover && (
             <a class="thumb" href={url} tabindex="-1" aria-hidden="true" data-continuum="cover">
               <Image src={cover} alt="" width={480} />
@@ -81,17 +79,37 @@ const { Content } = !title ? await render(post) : { Content: null };
     margin-block-start: var(--space-2xs);
   }
 
-  .titled.has-thumb {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) var(--size-thumb);
-    gap: var(--space-xs);
-    align-items: start;
-  }
-
-  .text {
+  .titled {
     display: flex;
     flex-direction: column;
     gap: var(--space-2xs);
+  }
+
+  /*
+   * With a cover, the title runs the full width on its own row and the cover sits
+   * beside the summary below it. A long title is never squeezed into a narrow
+   * column next to the picture.
+   */
+  .titled.has-thumb {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--size-thumb);
+    grid-template-areas:
+      'title title'
+      'summary thumb';
+    column-gap: var(--space-xs);
+    align-items: start;
+  }
+
+  .has-thumb .title {
+    grid-area: title;
+  }
+
+  .has-thumb .summary {
+    grid-area: summary;
+  }
+
+  .thumb {
+    grid-area: thumb;
   }
 
   /* A block link, so the tap area covers every line of a long title. */
@@ -194,12 +212,12 @@ const { Content } = !title ? await render(post) : { Content: null };
       border-left: var(--border-thin);
     }
 
-    .titled.has-thumb {
-      gap: var(--space-post-gutter);
+    .titled {
+      gap: var(--space-s);
     }
 
-    .text {
-      gap: var(--space-s);
+    .titled.has-thumb {
+      column-gap: var(--space-post-gutter);
     }
 
     .summary,

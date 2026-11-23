@@ -85,7 +85,7 @@
   --width-side: 20rem; /* 320 */
   --gap-columns: 4rem; /* 64 */
   --size-touch: 2.75rem; /* 44 — smallest tap target */
-  --size-thumb: 5.25rem; /* 84 — cover thumbnail on phones */
+  --size-thumb: 6rem; /* 96 — cover thumbnail on phones */
   --border-thin: 1px solid var(--color-line);
 
   /* Timeline and sidebar sizes that differ between tablet and desktop. */
@@ -112,7 +112,7 @@
     /* Tablet: posts share the width with a narrow sidebar. */
     --text-post-title: 1.625rem; /* 26 */
     --text-article-title: 2.25rem; /* 36 */
-    --size-thumb: 7.5rem; /* 120, square */
+    --size-thumb: 8.75rem; /* 140, square */
     --width-side: 15rem; /* 240 */
     --gap-columns: 2rem; /* 32 */
     --space-post-gutter: 1.25rem; /* 20 */
@@ -127,8 +127,8 @@
     /* Desktop: the full-size timeline and sidebar. */
     --text-post-title: 2rem; /* 32 */
     --text-article-title: 2.75rem; /* 44 */
-    --size-thumb: 15rem; /* 240 */
-    --ratio-thumb: 16 / 9; /* 240 × 135 */
+    --size-thumb: 17.5rem; /* 280 */
+    --ratio-thumb: 16 / 9; /* 280 × 158 */
     --width-side: 20rem; /* 320 */
     --gap-columns: 4rem; /* 64 */
     --space-post-gutter: var(--space-l); /* 32 */
