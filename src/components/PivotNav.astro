@@ -5,9 +5,14 @@
  */
 import { NAV } from '@/site.config';
 
-/** First segment of the current URL, e.g. "topics" for /topics/design/. */
-const section = Astro.url.pathname.split('/').filter(Boolean)[0] ?? '';
-const isCurrent = (match: string) => (match === '' ? section === '' || section === 'posts' : section === match);
+/**
+ * Which menu item the current URL belongs to: the first segment of the URL,
+ * with two exceptions. Home's later pages (/2/, /3/…) belong to "home", and a
+ * single post (/posts/<name>/) belongs to the "posts" item, which lists them.
+ */
+const first = Astro.url.pathname.split('/').filter(Boolean)[0] ?? '';
+const section = /^\d+$/.test(first) ? '' : first === 'posts' ? 'archive' : first;
+const isCurrent = (match: string) => section === match;
 ---
 
 <nav aria-label="Sections">

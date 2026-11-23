@@ -85,6 +85,21 @@ a:hover {
   white-space: nowrap;
 }
 
+/*
+ * Makes a small link easy to tap. The clickable area grows to at least
+ * --size-touch (44 px) in each direction, without changing how the link looks
+ * or where anything sits. Percentages here are the link's own size.
+ */
+.tap {
+  position: relative;
+}
+
+.tap::after {
+  content: '';
+  position: absolute;
+  inset: min(0px, calc((100% - var(--size-touch)) / 2));
+}
+
 /* A centred column with the page gutters. */
 .container {
   width: 100%;
