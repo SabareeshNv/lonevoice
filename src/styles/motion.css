@@ -23,6 +23,7 @@
   --duration-feather: 0.6s; /* each item turning in */
   --stagger-feather: 60ms; /* gap between items */
   --duration-fade: 0.13s; /* old column disappearing */
+  --duration-scrim: 0.5s; /* a cover's dark fade easing away as the cover flies */
   --duration-pivot-out: 0.26s;
   --duration-pivot-in: 0.53s;
   --delay-pivot: 0.1s;
@@ -137,6 +138,21 @@ html[data-motion^='pivot']::view-transition-old(sidebar) {
   height: 100%;
   object-fit: cover;
   animation: none;
+}
+
+/*
+ * A cover with a title on it (a timeline card) keeps its dark fade while it flies,
+ * then eases it away, so the picture is never bare while the title moves over it.
+ * The old image is cropped to the box like the new one, and drawn normally (not
+ * added to the new one).
+ */
+::view-transition-old(*.scrimmed) {
+  display: block;
+  z-index: 1; /* above the new image (which is opaque), so its fade-out can be seen */
+  height: 100% !important;
+  object-fit: cover !important;
+  mix-blend-mode: normal !important;
+  animation: lv-fade-out var(--duration-scrim) var(--ease-in) both !important; /* !important: Astro's own fade-out would otherwise win */
 }
 
 /* Text that changes size scales as one copy instead of two cross-fading. */

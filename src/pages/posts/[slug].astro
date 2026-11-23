@@ -99,7 +99,7 @@ const schema = [
       {
         cover && (
           <div
-            class="cover feather"
+            class:list={['cover', 'feather', { scrimmed: title }]}
             style="--i: 2"
             data-flight={shared.cover(post.id)}
             transition:name={shared.cover(post.id)}
@@ -170,6 +170,15 @@ const schema = [
     overflow: hidden;
     background: var(--color-tile);
     view-transition-class: cover;
+  }
+
+  /*
+   * A titled post's card cover carries a dark fade for its title. This class tells the
+   * page change to keep that fade for a moment while the cover flies here (the browser
+   * takes a shared element's class from the page being arrived at).
+   */
+  .scrimmed {
+    view-transition-class: cover scrimmed;
   }
 
   .cover :global(img) {

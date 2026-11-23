@@ -40,6 +40,9 @@ const { Content } = !title ? await render(post) : { Content: null };
           {cover && (
             <a class="thumb" href={url} tabindex="-1" aria-hidden="true" data-continuum="cover">
               <Image src={cover} alt="" width={1280} widths={COVER_WIDTHS} sizes={COVER_SIZES} />
+              <span class="scrim" aria-hidden="true">
+                <span class="scrim-text">{title}</span>
+              </span>
             </a>
           )}
         </div>
@@ -107,8 +110,8 @@ const { Content } = !title ? await render(post) : { Content: null };
     grid-area: media;
     align-self: end;
     z-index: 1;
-    padding: var(--space-xl) var(--space-m) var(--space-s) 0;
-    background: linear-gradient(to top, rgb(0 0 0 / 0.88) 0%, rgb(0 0 0 / 0.62) 55%, transparent 100%);
+    padding: 0 var(--space-m) var(--space-s) 0;
+    transform-origin: left bottom; /* the lift grows from the corner, so the text keeps its left alignment */
   }
 
   .has-thumb .title a {
@@ -184,10 +187,40 @@ const { Content } = !title ? await render(post) : { Content: null };
     background: var(--color-tile);
   }
 
+  .thumb {
+    position: relative;
+    view-transition-class: cover scrimmed;
+  }
+
   .thumb img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  /*
+   * The dark fade behind the title lives in the cover, so it lifts and flies with
+   * the picture (it used to belong to the title, which left the picture bare when
+   * the title moved). Its height follows the title: an unseen copy of the title,
+   * in the same type and width, sizes it.
+   */
+  .scrim {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    padding: var(--space-xl) var(--space-m) var(--space-s) 0;
+    background: linear-gradient(to top, rgb(0 0 0 / 0.88) 0%, rgb(0 0 0 / 0.62) 55%, transparent 100%);
+    pointer-events: none;
+  }
+
+  .scrim-text {
+    display: block;
+    visibility: hidden;
+    font-size: var(--text-post-title);
+    font-weight: var(--weight-bold);
+    line-height: var(--leading-tight);
+    letter-spacing: -0.015em;
+    text-wrap: balance;
   }
 
   .photo img {
