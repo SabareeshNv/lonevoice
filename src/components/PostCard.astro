@@ -1,7 +1,7 @@
 ---
 /**
  * One post on a timeline. Its shape depends on what the post has:
- * - title (+ cover)  → title, summary and tags, with the cover as a thumbnail
+ * - title (+ cover)  → title, summary and tags; with a cover, the title sits inside the picture
  * - cover, no title  → a photo post: the picture full width, then the text
  * - neither          → a note: the full text
  */
@@ -86,22 +86,33 @@ const { Content } = !title ? await render(post) : { Content: null };
   }
 
   /*
-   * With a cover, the title runs the full width on its own row and the cover sits
-   * beside the summary below it. A long title is never squeezed into a narrow
-   * column next to the picture.
+   * With a cover, the title sits inside the bottom of the picture (the Windows
+   * Phone tile look), and the summary follows below. The title and the cover share
+   * one grid cell. The title has no left padding, so its left edge lines up with
+   * the picture's edge and with the summary and tags below. A long title has the
+   * whole picture width to wrap across. The dark fade is behind the title only,
+   * so the picture keeps its colour and a short title barely darkens it.
    */
   .titled.has-thumb {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) var(--size-thumb);
+    grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
-      'title title'
-      'summary thumb';
-    column-gap: var(--space-xs);
-    align-items: start;
+      'media'
+      'summary';
+    row-gap: var(--space-s);
   }
 
   .has-thumb .title {
-    grid-area: title;
+    grid-area: media;
+    align-self: end;
+    z-index: 1;
+    padding: var(--space-xl) var(--space-m) var(--space-s) 0;
+    background: linear-gradient(to top, rgb(0 0 0 / 0.88) 0%, rgb(0 0 0 / 0.62) 55%, transparent 100%);
+  }
+
+  .has-thumb .title a {
+    color: var(--color-fg);
+    text-shadow: 0 1px 14px rgb(0 0 0 / 0.55);
   }
 
   .has-thumb .summary {
@@ -109,7 +120,8 @@ const { Content } = !title ? await render(post) : { Content: null };
   }
 
   .thumb {
-    grid-area: thumb;
+    grid-area: media;
+    aspect-ratio: var(--ratio-card);
   }
 
   /* A block link, so the tap area covers every line of a long title. */
@@ -168,7 +180,7 @@ const { Content } = !title ? await render(post) : { Content: null };
 
   .thumb img {
     width: 100%;
-    aspect-ratio: var(--ratio-thumb);
+    height: 100%;
     object-fit: cover;
   }
 
@@ -214,10 +226,6 @@ const { Content } = !title ? await render(post) : { Content: null };
 
     .titled {
       gap: var(--space-s);
-    }
-
-    .titled.has-thumb {
-      column-gap: var(--space-post-gutter);
     }
 
     .summary,
