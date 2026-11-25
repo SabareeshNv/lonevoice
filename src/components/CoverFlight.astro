@@ -1,0 +1,56 @@
+---
+/**
+ * Makes one picture travel when a post is opened or left.
+ *
+ * Opening a post from a timeline, the posts list or a topic: the card's cover and
+ * the post page's cover get the same shared name, so the browser moves one into
+ * the other. Going back, the post page's cover travels to its card.
+ * Cards are never named in advance: the same post can sit on several pages, and
+ * a name on every card would send unrelated pictures flying.
+ *
+ * Only elements marked `data-cover` take part. Where there is no partner (a post
+ * with no cover, a post reached from search or from another post) nothing is
+ * named and the page just changes.
+ */
+---
+<script>
+  import { COVER_NAME } from '@/lib/transitions';
+
+  // Bundled, so it runs once and keeps listening for every page change under the client router.
+  const POST = /^\/posts\/(?!\d+\/?$)([^/]+)\/?$/;
+  const idOf = (url: URL) => POST.exec(url.pathname)?.[1];
+  const name = (el: Element | null) => {
+    if (el instanceof HTMLElement) el.style.viewTransitionName = COVER_NAME;
+  };
+
+  let opening = false; // a post page is about to appear: its cover should take the card's name
+  let leaving: string | undefined; // a timeline is about to appear: this post's card should take the cover's name
+
+  document.addEventListener('astro:before-preparation', (event) => {
+    opening = false;
+    leaving = undefined;
+    document.querySelectorAll<HTMLElement>('[data-cover]').forEach((el) => (el.style.viewTransitionName = ''));
+
+    const to = idOf(event.to);
+    const from = idOf(event.from);
+    if (to) {
+      // Opening a post from a page that shows its card.
+      const card = document.querySelector(`article[data-post-id="${CSS.escape(to)}"] [data-cover]`);
+      if (card) {
+        name(card);
+        opening = true;
+      }
+    } else if (from) {
+      // Leaving a post for a page that may show its card.
+      name(document.querySelector('.article [data-cover]'));
+      leaving = from;
+    }
+  });
+
+  document.addEventListener('astro:after-swap', () => {
+    if (opening) name(document.querySelector('.article [data-cover]'));
+    else if (leaving) name(document.querySelector(`article[data-post-id="${CSS.escape(leaving)}"] [data-cover]`));
+    opening = false;
+    leaving = undefined;
+  });
+</script>

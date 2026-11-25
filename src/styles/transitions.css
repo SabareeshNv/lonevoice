@@ -1,0 +1,43 @@
+/*
+ * Page-change animation (see src/lib/transitions.ts for the main column).
+ *
+ *   main column   old fades out fast, new fades in and rises 0.5rem
+ *   header, sidebar, footer   don't animate (they are the same on every page)
+ *   post cover    the picture of the post being opened travels from its card to
+ *                 the top of the post page, and back
+ *
+ * Nothing else moves: no stagger, no list or paragraph animation.
+ */
+
+:root {
+  --duration-cover: 0.45s;
+  --ease-settle: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@keyframes lv-page-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes lv-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+}
+
+/* The cover: card and post page share one shape, so it only moves and resizes. */
+::view-transition-group(post-cover) {
+  animation-duration: var(--duration-cover);
+  animation-timing-function: var(--ease-settle);
+}
+
+/* Readers who ask for less motion get plain page changes. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

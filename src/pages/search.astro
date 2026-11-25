@@ -12,7 +12,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 
 <BaseLayout title="Search" description="Search the posts on Lone Voice." noindex>
   <PageIntro title="search" />
-  <div class="box feather" style="--i: 1">
+  <div class="box">
     <SearchBox size="large" showLabel={false} id="search-page-field" />
   </div>
 
@@ -20,7 +20,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
   <ol class="results" data-results></ol>
 
   <template data-result-template>
-    <li class="result feather">
+    <li class="result">
       <a class="link">
         <span class="date" data-date></span>
         <span class="title" data-title></span>
@@ -66,9 +66,8 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
     const list = document.querySelector<HTMLOListElement>('[data-results]')!;
     const template = document.querySelector<HTMLTemplateElement>('[data-result-template]')!;
 
-    function renderResult(data: PagefindData, index: number) {
+    function renderResult(data: PagefindData) {
       const item = template.content.cloneNode(true) as DocumentFragment;
-      item.querySelector<HTMLElement>('li')!.style.setProperty('--i', String(index));
       item.querySelector<HTMLAnchorElement>('a')!.href = data.url;
       item.querySelector('[data-date]')!.textContent = data.meta.date ?? '';
       item.querySelector('[data-title]')!.textContent = data.meta.title ?? data.url;

@@ -133,22 +133,19 @@ Each component keeps its markup, its styles (scoped with `<style>`) and its scri
 
 ## Motion
 
-Page changes use Astro's view transitions (`<ClientRouter />` in `BaseHead.astro`) and move like Windows Phone 7/8:
+Page changes use Astro's view transitions (`<ClientRouter />` in `BaseHead.astro`) and are kept small:
 
-- **Pivot:** between the menu sections (posts, topics, archive, about) the content slides sideways: left when moving right in the menu, right when moving left.
-- **Turnstile:** for everything else (opening a post or topic, search, back) the visible items swing away one by one on their left-edge hinge, top first; then the new page turns in. Lists **feather** in item by item; other pages turn in as a few large blocks. Pages are pre-loaded as their links appear on screen, so the turn-in follows straight away.
-- **Continuum:** the post you open keeps its date, title and cover. They lift slightly, then fly to their place on the post page, and back again.
-- **Header and sidebar:** stay put. Between the homepage and other pages the header simply cross-fades in place.
-
-Where things live:
+- **Content:** the old page content fades out quickly and the new content fades in, rising a few pixels.
+- **Cover:** opening a post that has a cover moves the picture from its card to the top of the post page, and back again.
+- **Header, sidebar and footer:** stay put.
 
 | File | What it does |
 | --- | --- |
-| `src/components/MotionDirector.astro` | Chooses pivot or turnstile for each navigation, plays the turnstile exit and the continuum lift |
-| `src/lib/motion.ts` | Timings, the menu order used for pivots, shared-element names |
-| `src/styles/motion.css` | Keyframes for pivot, feather, continuum |
+| `src/lib/transitions.ts` | The content animation and the shared cover name |
+| `src/styles/transitions.css` | Keyframes and timings |
+| `src/components/CoverFlight.astro` | Names the cover that travels |
 
-To make something feather in, give it `class="feather"` (with `style="--i: N"` for its place in a list) or put `data-feather` on its container. All motion is off for readers who set “reduce motion”; browsers without the View Transitions API load pages normally.
+All page animation is off for readers who set “reduce motion”; browsers without the View Transitions API load pages normally. The cover on a card and on its post page must have the same shape, or the picture would visibly zoom as it moves.
 
 Scripts in pages run only once with the client router, so page set-up belongs in an `astro:page-load` listener (see `src/pages/search.astro`).
 

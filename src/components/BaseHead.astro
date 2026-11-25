@@ -104,5 +104,5 @@ const imageUrl = new URL(imagePath, Astro.site).href;
 {/* Structured data */}
 {schema.map((item) => <script type="application/ld+json" set:html={JSON.stringify(item)} />)}
 
-{/* Page transitions: see src/lib/motion.ts and src/styles/motion.css. */}
+{/* Page transitions: see src/lib/transitions.ts and src/styles/transitions.css. */}
 <ClientRouter />

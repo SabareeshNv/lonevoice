@@ -10,16 +10,14 @@ import { dateParts, fullDate } from '@/lib/format';
 interface Props {
   date: Date;
   href?: string;
-  /** On a timeline: may be given a shared name at navigation time. */
-  continuum?: boolean;
 }
 
-const { date, href, continuum = false } = Astro.props;
+const { date, href } = Astro.props;
 const { day, month, weekday, year } = dateParts(date);
 const Tag = href ? 'a' : 'div';
 ---
 
-<Tag class="date" href={href} data-continuum={continuum ? 'date' : undefined}>
+<Tag class="date" href={href}>
   <time datetime={date.toISOString()}>
     <span class="visually-hidden">{fullDate(date)}</span>
     <span class="parts" aria-hidden="true">

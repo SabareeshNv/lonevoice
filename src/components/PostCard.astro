@@ -17,28 +17,27 @@ import TagList from './TagList.astro';
 
 interface Props {
   post: Post;
-  index?: number;
 }
 
-const { post, index = 0 } = Astro.props;
+const { post } = Astro.props;
 const { title, cover, coverAlt, tags, date, link, linkTitle } = post.data;
 const url = postUrl(post);
 const photo = isPhoto(post);
 const { Content } = !title ? await render(post) : { Content: null };
 ---
 
-<article class="post feather" style={`--i: ${index}`} data-post-id={post.id}>
-  <PostDate date={date} continuum />
+<article class="post" data-post-id={post.id}>
+  <PostDate date={date} />
   <div class="body">
     {
       title ? (
         <div class:list={['titled', { 'has-thumb': cover }]}>
-          <h2 class="title" data-continuum="title">
+          <h2 class="title">
             <a class="tap" href={url}>{title}</a>
           </h2>
           <p class="summary">{summary(post)}</p>
           {cover && (
-            <a class="thumb" href={url} tabindex="-1" aria-hidden="true" data-continuum="cover">
+            <a class="thumb" href={url} tabindex="-1" aria-hidden="true" data-cover>
               <Image src={cover} alt="" width={1280} widths={COVER_WIDTHS} sizes={COVER_SIZES} />
               <span class="scrim" aria-hidden="true">
                 <span class="scrim-text">{title}</span>
@@ -48,7 +47,7 @@ const { Content } = !title ? await render(post) : { Content: null };
         </div>
       ) : photo && cover ? (
         <>
-          <a class="photo" href={url} data-continuum="cover">
+          <a class="photo" href={url} data-cover>
             <Image src={cover} alt={coverAlt ?? ''} width={1280} widths={COVER_WIDTHS} sizes={COVER_SIZES} />
           </a>
           <div class="caption">{Content && <Content />}</div>
@@ -111,7 +110,6 @@ const { Content } = !title ? await render(post) : { Content: null };
     align-self: end;
     z-index: 1;
     padding: 0 var(--space-m) var(--space-s) 0;
-    transform-origin: left bottom; /* the lift grows from the corner, so the text keeps its left alignment */
   }
 
   .has-thumb .title a {
@@ -139,7 +137,6 @@ const { Content } = !title ? await render(post) : { Content: null };
   }
 
   .title {
-    view-transition-class: text;
     font-size: var(--text-post-title);
     font-weight: var(--weight-bold);
     letter-spacing: -0.015em;
@@ -182,14 +179,12 @@ const { Content } = !title ? await render(post) : { Content: null };
   .thumb,
   .photo {
     display: block;
-    view-transition-class: cover;
     overflow: hidden;
     background: var(--color-tile);
   }
 
   .thumb {
     position: relative;
-    view-transition-class: cover scrimmed;
   }
 
   .thumb img {
@@ -199,10 +194,9 @@ const { Content } = !title ? await render(post) : { Content: null };
   }
 
   /*
-   * The dark fade behind the title lives in the cover, so it lifts and flies with
-   * the picture (it used to belong to the title, which left the picture bare when
-   * the title moved). Its height follows the title: an unseen copy of the title,
-   * in the same type and width, sizes it.
+   * The dark fade behind the title lives in the cover, so it travels with the
+   * picture. Its height follows the title: an unseen copy of the title, in the
+   * same type and width, sizes it.
    */
   .scrim {
     position: absolute;

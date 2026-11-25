@@ -18,7 +18,7 @@ const lede = `${total} ${total === 1 ? 'book' : 'books'} read, by the year I fin
     {
       years.map(({ year, books }, i) => (
         <YearSection year={year} past={i > 0}>
-          <ul class="books" data-feather>
+          <ul class="books">
             {books.map(({ data }, n) => (
               <li class="book">
                 {data.cover ? (

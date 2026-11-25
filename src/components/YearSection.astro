@@ -14,7 +14,7 @@ const { year, past = false } = Astro.props;
 ---
 
 <section class="year" aria-labelledby={`year-${year}`}>
-  <h2 id={`year-${year}`} class:list={['year-title', 'feather', { past }]}>
+  <h2 id={`year-${year}`} class:list={['year-title', { past }]}>
     {year}
   </h2>
   <slot />

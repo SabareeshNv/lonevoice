@@ -6,9 +6,10 @@
  * two-column layout on large screens; without it the page is one column.
  */
 import BaseHead, { type SeoProps } from '@/components/BaseHead.astro';
-import MotionDirector from '@/components/MotionDirector.astro';
+import CoverFlight from '@/components/CoverFlight.astro';
 import SiteFooter from '@/components/SiteFooter.astro';
 import SiteHeader from '@/components/SiteHeader.astro';
+import { pageAnimation } from '@/lib/transitions';
 import { SITE } from '@/site.config';
 
 interface Props extends SeoProps {
@@ -30,7 +31,7 @@ const hasSidebar = Astro.slots.has('sidebar');
     <a class="skip-link" href="#content">Skip to content</a>
     <SiteHeader variant={header} search={hasSidebar ? 'mobile' : 'always'} />
     <div class:list={['container', 'layout', { 'with-sidebar': hasSidebar }]}>
-      <main id="content" class="main" transition:name="main" transition:animate="none">
+      <main id="content" class="main" transition:name="main" transition:animate={pageAnimation}>
         <slot />
       </main>
       {
@@ -48,7 +49,7 @@ const hasSidebar = Astro.slots.has('sidebar');
       }
     </div>
     <SiteFooter />
-    <MotionDirector />
+    <CoverFlight />
   </body>
 </html>
 

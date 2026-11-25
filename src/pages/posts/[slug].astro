@@ -10,7 +10,6 @@ import Sidebar from '@/components/Sidebar.astro';
 import TagList from '@/components/TagList.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { shortDate } from '@/lib/format';
-import { shared } from '@/lib/motion';
 import { COVER_SIZES, COVER_WIDTHS } from '@/lib/images';
 import { displayTitle, getPosts, postUrl, summary, type Post } from '@/lib/posts';
 import { breadcrumbSchema, postSchema } from '@/lib/seo';
@@ -60,30 +59,14 @@ const schema = [
   schema={schema}
 >
   <article class="article" data-pagefind-body data-pagefind-meta={`date:${shortDate(date)}`}>
-    <div
-      class="feather"
-      data-pagefind-ignore
-      data-flight={shared.date(post.id)}
-      transition:name={shared.date(post.id)}
-    >
+    <div data-pagefind-ignore>
       <PostDate date={date} />
     </div>
     <div class="body">
       <header class="head">
-        {/*
-          Only a real title flies; a note's hidden heading must not get a name. The title
-          turns in by itself (not inside a turning block): a flying title takes on its
-          parent's turn as the pose it lands in, and arrived tilted and squashed.
-        */}
         {
           title ? (
-            <h1
-              class="title feather"
-              style="--i: 1"
-              data-pagefind-meta="title"
-              data-flight={shared.title(post.id)}
-              transition:name={shared.title(post.id)}
-            >
+            <h1 class="title" data-pagefind-meta="title">
               {heading}
             </h1>
           ) : (
@@ -94,21 +77,16 @@ const schema = [
         }
         {
           updated && (
-            <p class="updated feather" style="--i: 1" data-pagefind-ignore>
+            <p class="updated" data-pagefind-ignore>
               updated <time datetime={updated.toISOString()}>{shortDate(updated)}</time>
             </p>
           )
         }
-        <div class="feather" style="--i: 1" data-pagefind-ignore><TagList tags={tags} /></div>
+        <div data-pagefind-ignore><TagList tags={tags} /></div>
       </header>
       {
         cover && (
-          <div
-            class:list={['cover', 'feather', { scrimmed: title }]}
-            style="--i: 2"
-            data-flight={shared.cover(post.id)}
-            transition:name={shared.cover(post.id)}
-          >
+          <div class="cover" data-cover data-post-id={post.id}>
             <Image src={cover} alt={coverAlt ?? ''} width={1280} widths={COVER_WIDTHS} sizes={COVER_SIZES} loading="eager" />
           </div>
         )
@@ -116,13 +94,13 @@ const schema = [
       <Prose><Content /></Prose>
       {
         link && (
-          <div class="feather" style="--i: 2">
+          <div>
             <LinkCard url={link} title={linkTitle} />
           </div>
         )
       }
 
-      <nav class="pager feather" style="--i: 3" aria-label="More posts" data-pagefind-ignore>
+      <nav class="pager" aria-label="More posts" data-pagefind-ignore>
         {
           older && (
             <a class="older" href={postUrl(older)}>
@@ -160,7 +138,6 @@ const schema = [
   }
 
   .title {
-    view-transition-class: text;
     font-size: var(--text-article-title);
     font-weight: var(--weight-bold);
     letter-spacing: -0.02em;
@@ -174,19 +151,9 @@ const schema = [
   .cover {
     overflow: hidden;
     background: var(--color-tile);
-    view-transition-class: cover;
   }
 
-  /*
-   * A titled post's card cover carries a dark fade for its title. This class tells the
-   * page change to keep that fade for a moment while the cover flies here (the browser
-   * takes a shared element's class from the page being arrived at).
-   */
-  .scrimmed {
-    view-transition-class: cover scrimmed;
-  }
-
-  /* The same shape as the card's cover, so the picture is never re-cropped (zoomed) while it flies. */
+  /* The same shape as the card's cover, so the picture isn't re-cropped (zoomed) when it moves between the two. */
   .cover :global(img) {
     width: 100%;
     aspect-ratio: var(--ratio-card);

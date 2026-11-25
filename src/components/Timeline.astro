@@ -10,7 +10,7 @@ const { posts } = Astro.props;
 ---
 
 <div class="timeline">
-  {posts.map((post, index) => <PostCard post={post} index={index} />)}
+  {posts.map((post) => <PostCard post={post} />)}
 </div>
 
 <style>

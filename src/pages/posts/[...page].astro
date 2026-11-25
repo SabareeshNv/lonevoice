@@ -44,8 +44,8 @@ const description = first
       <YearSection year={year} past={year !== latestYear}>
         {months.map(({ month, posts }) => (
           <section class="month" aria-label={`${month} ${year}`}>
-            <h3 class="month-title feather" style="--i: 1">{month}</h3>
-            <ul class="rows" data-feather>
+            <h3 class="month-title">{month}</h3>
+            <ul class="rows">
               {posts.map((post) => {
                 const { day, month: mon } = dateParts(post.data.date);
                 return (

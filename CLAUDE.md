@@ -26,7 +26,7 @@ Project memory for Claude. Read this before changing anything. Keep it current: 
 
 - **Anonymous.** No personal name, photo or author byline anywhere. The publisher is the site name (`SITE.publisher`) in structured data too. The owner said: "I won't be using my personal name in this website/blog."
 - **No Tailwind, no CSS framework.** The owner explicitly switched from Tailwind 4 to hand-written modern CSS: grid, flexbox, custom properties and logical properties.
-- **Co-located Astro components.** Each component keeps its markup, scoped `<style>` and `<script>` in one `.astro` file. Global CSS is only `tokens.css`, `global.css` (a reset plus `.container` and `.visually-hidden`) and `motion.css`.
+- **Co-located Astro components.** Each component keeps its markup, scoped `<style>` and `<script>` in one `.astro` file. Global CSS is only `tokens.css`, `global.css` (a reset plus `.container` and `.visually-hidden`) and `transitions.css`.
 - **Mobile first, three sizes.** Base styles (no media query) are the **mobile** layout, under 48rem (768 px). Two breakpoints switch to the larger sizes:
   - `@media (min-width: 48rem)`: **tablet**, 768–1023 px. Two columns: the posts plus a **narrow 240 px sidebar** (32 px gap), stacked date block in a 64 px column (40 px day), 26 px post titles, 36 px article titles, 16:10 covers with the title inside, smaller sidebar type. (The owner chose this, "Option B", from the canvas; a full-width version with the sidebar below was rejected because the sidebar items didn't line up.)
   - `@media (min-width: 64rem)`: **desktop**, 1024 px and up. Two columns with the full 320 px sidebar (64 px gap), the same 64 px date column, 32 px titles, 2:1 covers with the title inside.
@@ -41,7 +41,7 @@ Project memory for Claude. Read this before changing anything. Keep it current: 
 - **Casing:** interface text is lowercase (menu, sidebar headings, "follow along", footer links, page titles via `PageIntro`). The owner's own post titles and headings keep the case they are written in. "RSS" stays capitals.
 - **Dark only** (`color-scheme: dark`). Every colour token also has a light value via `light-dark()`. Changing it to `dark light` would follow the reader's system setting, but the owner hasn't asked for that.
 - **Browser reach.** `cssTarget` in `astro.config.mjs` (Chrome 100, Firefox 100, Safari 15.4, about early 2022) makes the build rewrite newer CSS for older browsers: `light-dark()` colours become `var()` fallbacks and range queries (`width >= 48rem`) become `min-width`. Write media queries as `min-width` anyway. Before this, the site needed Chrome 123 / Safari 17.5 / Firefox 120 (2024) for colours and Chrome 104 / Safari 16.4 (2023) for the tablet and desktop layouts. Page transitions still need a 2023+ browser (Safari 18 for shared elements) and simply don't animate elsewhere. Never test by eye only: compare `dist` screenshots before and after a CSS change.
-- **Almost no JavaScript.** The only scripts are the search page (Pagefind), `MotionDirector`, Astro's `<ClientRouter />`, the share buttons (`ShareLinks`) and the sidebar-height measurer (`BaseLayout`). Forms work without JavaScript.
+- **Almost no JavaScript.** The only scripts are the search page (Pagefind), `CoverFlight`, Astro's `<ClientRouter />`, the share buttons (`ShareLinks`) and the sidebar-height measurer (`BaseLayout`). Forms work without JavaScript.
 - **Accessibility:** every link and button must have a tappable area of at least 44 px (`--size-touch`) in both directions. For a small one (tags, "continue reading", footer links) add `class="tap"` (in `global.css`): it grows the hit area with an invisible `::after` and changes nothing visible. Check with a script that probes `document.elementFromPoint` around each link, not by arithmetic. Links inside running text are exempt. Real links and buttons, visible focus outlines, a skip link, `aria-label` on icon-only controls, `alt` text required for covers (the schema enforces it), and `prefers-reduced-motion` turns all motion off.
 
 ## Design decisions (all approved by the owner)
@@ -70,7 +70,7 @@ Project memory for Claude. Read this before changing anything. Keep it current: 
   The owner rejected repeating the menu items in the sidebar, and rejected "recent covers".
 - **Timeline** (`PostCard`): one column, newest first.
   - **Date block:** not a link (the owner asked for that); the way into a post is the title, "continue reading" or, for posts with no title, "view post →". On tablet and desktop it's a vertical stack (small "NOV", a 40 px thin grey "21" so the title leads, the weekday in orange, then the year) with a thin divider before the post. On phones it's **one small line** ("21 NOV 2026 · SAT", 12 px semibold). The owner found the big date on phones squeezed the text and distracted from the title.
-  - **Covers:** a titled post with a cover is an image card: the cover runs the full width of the card (16:10 on phones and tablets, 2:1 on desktop, `--ratio-card`) and the **title sits inside the bottom of the picture**, in white, like a Windows Phone tile. The summary, tags and link follow below. The title has no left padding, so its left edge lines up exactly with the picture's edge and with the summary and tags (the owner asked for that alignment), and 1 rem of padding below it (the owner briefly asked for 0.5 rem, then kept 1 rem). It does not underline on hover (the owner asked for that); the rest of the card's links still do. The dark fade (`.scrim`) lives **inside the cover link**, not on the title, so it moves and scales with the picture when the cover lifts and flies (when it was on the title, the lift scaled title and cover about different centres and the bare picture showed for a moment: owner report). Its height comes from an invisible copy of the title (`.scrim-text`, `visibility: hidden`, same type settings), so a short title barely darkens the picture and a long one gets a taller fade; keep the copy's type settings identical to the real title's. The real title sits above it (`z-index: 1`, `transform-origin: left bottom`). Title and cover share one grid cell and stay separate elements (`data-continuum` flights need that: never nest one named element inside the other). History: the cover used to sit beside the title, which squeezed long titles into four narrow lines (owner report); a title-above-cover-beside-summary layout was tried and rejected. Photo posts (a cover with no title) show the picture full width with a caption below.
+  - **Covers:** a titled post with a cover is an image card: the cover runs the full width of the card (16:10 on phones and tablets, 2:1 on desktop, `--ratio-card`) and the **title sits inside the bottom of the picture**, in white, like a Windows Phone tile. The summary, tags and link follow below. The title has no left padding, so its left edge lines up exactly with the picture's edge and with the summary and tags (the owner asked for that alignment), and 1 rem of padding below it (the owner briefly asked for 0.5 rem, then kept 1 rem). It does not underline on hover (the owner asked for that); the rest of the card's links still do. The dark fade (`.scrim`) lives **inside the cover link**, not on the title, so it is part of the cover picture that travels between card and post page. Its height comes from an invisible copy of the title (`.scrim-text`, `visibility: hidden`, same type settings), so a short title barely darkens the picture and a long one gets a taller fade; keep the copy's type settings identical to the real title's. The real title sits above it (`z-index: 1`). Title and cover share one grid cell and stay separate elements. History: the cover used to sit beside the title, which squeezed long titles into four narrow lines (owner report); a title-above-cover-beside-summary layout was tried and rejected. Photo posts (a cover with no title) show the picture full width with a caption below.
   - **Titles and text:** titles are bold: 24 px on phones (raised from 21 px at the owner's request, because titles were barely bigger than the 16 px summaries), 26 px on tablet and 32 px on desktop (`--text-post-title`). Summaries are a softer grey (`--color-body`). Notes are 19 px regular.
   - **Footer row:** tags (pink, no boxes) sit on the left and "continue reading →" (**white**, not pink) on the right edge, in one row. Every post has this row, and the link is always on the right edge with the plain arrow (the owner rejected a left-aligned variant and a round arrow button as inconsistent / not needed): notes and photo posts, which have no title and are shown in full, get "view post →" in the same place so each one can be opened. The owner found the stacked, same-coloured version cluttered.
   - Hairlines separate posts.
@@ -88,7 +88,7 @@ Each post is a Markdown file in `src/content/posts/`. The file name becomes the 
   - cover without a title → photo post (full-width picture)
   - neither → note (shown in full on the timeline)
   - `link` works with any kind (the card goes under the text)
-- **Post file names can't be only digits** (`5.md`): `/posts/5/` would be page 5 of the posts list. The build stops with a clear message if one appears. `MotionDirector` also ignores digits-only names when it recognises a post page.
+- **Post file names can't be only digits** (`5.md`): `/posts/5/` would be page 5 of the posts list. The build stops with a clear message if one appears. `CoverFlight` also ignores digits-only names when it recognises a post page.
 - **Cover images** live in `src/assets/covers/`. Astro makes each in several widths (480–1600 px, `COVER_WIDTHS` and `COVER_SIZES` in `src/lib/images.ts`) and the browser picks the one its screen needs: a phone at 3× needs about 1100 px, a retina laptop about 1300 px. Astro never enlarges an original, so **use a picture at least 1600 px wide**; a smaller one is shown at its own size and looks soft on big or high-density screens. (Card covers were once generated at 480 px only, a leftover from when they were thumbnails, and looked pixelated; the owner reported it. Check sharpness by comparing `img.currentSrc`'s file width with the shown width × `devicePixelRatio`, not `naturalWidth`, which is in screen pixels when a `srcset` is used.)
 - **Sample content is placeholder.** The 10 sample posts and the 3 generated cover images need replacing by the owner. The About, Content Policy and Privacy Policy texts were drafted by Claude from how the site really works (no cookies or storage, no analytics, only same-site requests, share buttons act only when tapped, hosted on Cloudflare Pages, no comments or ads); the owner should review them. They are statements of fact and promises, so update them (and the `updated` date at the top of each policy) whenever the site changes, for example if analytics, comments or ads are ever added. The sample "Starting this blog" post is marked `pinned`.
 
@@ -101,49 +101,36 @@ A grid of books read, grouped by the year finished (newest year first), styled l
 - **The books in the file are the owner's own** (Musafir Cafe, The Mirror Of Infinite Endings, Ikigai), each with a cover in `src/assets/books/`. A title containing a colon needs quotes in the YAML.
 - Books are not pages and are not in search or the sitemap beyond `/books/` itself.
 
-## Motion (Windows Phone page transitions) — read before touching
+## Motion (page transitions) — read before touching
 
-Built on Astro's `<ClientRouter />` (in `BaseHead.astro`), so pages swap without full reloads.
+**Experiment branch (November 2026):** the Windows Phone animations (pivot, turnstile, feather, continuum with lift) were removed on the `experiment` branch and replaced with a small, plain set. `main` still has the Windows Phone version; its details are in the git history (`MotionDirector.astro`, `src/lib/motion.ts`, `src/styles/motion.css`). The owner asked for "smooth and sensible" motion that need not copy Windows Phone, and only on elements where it makes sense. Don't add motion to every element.
+
+Built on Astro's `<ClientRouter />` (in `BaseHead.astro`), so pages swap without full reloads. Prefetch (`prefetchAll`, viewport strategy in `astro.config.mjs`) keeps the next page ready.
 
 | File | Role |
 | --- | --- |
-| `src/components/MotionDirector.astro` | Picks the motion for each navigation, names the continuum elements, plays the turnstile exit and the lift |
-| `src/lib/motion.ts` | `motionFor()` (pivot or turnstile), menu order, `EXIT` and `LIFT` timings, `shared` name builders |
-| `src/styles/motion.css` | All CSS timings as tokens at the top, plus the keyframes for pivot, feather, continuum, tagline and search button |
+| `src/lib/transitions.ts` | The main column's animation (`pageAnimation`, passed to `transition:animate` in `BaseLayout`) and the shared name `COVER_NAME` |
+| `src/styles/transitions.css` | The two keyframes, the cover's timing, and the reduced-motion rule |
+| `src/components/CoverFlight.astro` | A small script that names the cover that should travel |
 
-**The motions:**
-- **Pivot:** between menu sections (`/`, `/N/`, `/topics/`, `/posts/`, `/posts/N/`, `/books/`); About and the policies are footer pages, so they use the turnstile. The main column slides sideways in the direction of the menu, and the old sidebar fades. Items don't feather during a pivot.
-- **Turnstile:** every other navigation.
-  - **Exit:** the visible items swing away one by one on a left-edge hinge, using the Web Animations API inside an overridden `event.loader`, in parallel with loading the next page.
-  - **Entry:** the old column fades; the new column appears at once and its items **feather** in.
-- **Feather — lists only** (timeline cards, topic tiles, archive rows, search results): each item turns in on its left-edge hinge, staggered. Use `class="feather"` with `style="--i: N"`, or `data-feather` on a list container. Non-list pages (post, about, policies, search box, page intros) turn in as **a few large blocks** (`.feather` on the block, never on each paragraph). The owner found per-paragraph and per-sidebar-item animation unnecessary.
-- **Continuum:** a post's date, title and cover fly between its timeline card and the post page. The title gives a small lift first.
-- **Header: never animated.** It has no `transition:name` and stays part of the root snapshot, which cross-fades in place (identical headers show no change; the homepage's large header and the compact one cross-fade). Windows Phone never animated a shared header; the earlier giant↔compact morph looked janky on desktop and was removed.
-- **Sidebar: never animated** on navigation (same content on every page). It only cross-fades in a turnstile and fades out in a pivot.
-- **Prefetch:** `prefetch: { prefetchAll: true, defaultStrategy: 'viewport' }` in `astro.config.mjs`, so the next page is usually ready before the exit ends (touch screens never hover). This is what keeps transitions smooth on phones.
+**What moves:**
+- **Main column** (`transition:name="main"`): the old content fades out in 0.12 s, the new content fades in over 0.3 s while rising 0.5 rem. The same for every navigation, forwards or back. No stagger, no per-item or per-paragraph animation.
+- **Header, sidebar, footer:** don't animate. The sidebar is named `sidebar` with `transition:animate="none"` so it swaps instantly; the header and footer are part of the page background, which cross-fades (identical headers show no change).
+- **Post cover:** opening a post from a page that shows its card (home, posts list, topic) moves the card's cover into the post page's cover (0.45 s, ease-out), and going back moves it to its card. Notes, posts with no cover, and posts opened from search or from another post have no travelling picture; the page just changes. The date and title don't fly.
+- Hover and colour micro-transitions on buttons and links (0.15 s) are not page transitions and stay.
+- `prefers-reduced-motion: reduce` turns page animation off (`transitions.css`; Astro also skips it).
 
-**Current timings** (the owner has slowed them twice; ask before changing):
-- Flights and feather: 0.6 s
-- Feather stagger: 60 ms
-- Turnstile exit: 265 ms per item, 53 ms apart, capped at 6 staggers
-- Pivot: 0.26 s out, 0.53 s in, 0.1 s delay
-- Old-column fade: 0.13 s
-- Lift: 160 ms
+**How the cover is named:** `CoverFlight.astro` listens for `astro:before-preparation` and `astro:after-swap`. Elements that can travel carry `data-cover` (the card's cover link in `PostCard`, the cover box on the post page, which also carries `data-post-id`). Opening a post: the card is named `post-cover` before the old page is captured and the post page's cover is named right after the swap. Going back: the other way round. Nothing is named in advance, so the same post on several pages (home, topic, posts list) never sends unrelated pictures flying.
 
-**Lessons learned (each was a real bug the owner saw):**
-1. **Never rotate or slide a whole tall column of text.** On phones its lines streak across the screen. That's why the exit swings individual items and the old column only fades.
-2. **Never put static `transition:name` on list items.** Posts that appear on two pages fly across the screen. Timeline cards carry `data-continuum` markers instead, and `MotionDirector` names only the one card involved.
-3. **Never pass an empty or undefined `transition:name`.** Astro then generates numbered names (`astro-<hash>-N`) that pair unrelated elements across pages. Render the directive only when the value exists.
-4. **Post pages name their date, title and cover** (`data-flight` + `transition:name`). The director checks, after the next page has loaded, whether a partner exists. Unpaired pieces get `view-transition-name: none` and swing away or feather in like the rest. `.flying` marks pieces that really fly, and these skip the feather.
-5. **Never name the site header or its pieces.** Named, it morphed (janky), flew in from above when the scroll position changed, and showed an off-screen header at the top. Unnamed, it cross-fades in place. Post pages have their own `<header>`; target the site header as `[data-site-header]` if ever needed.
-6a. **The card cover's fade must outlive the swap.** Both the card cover and the post page's cover (titled posts only) carry `view-transition-class: cover scrimmed`; the class list comes from the page being arrived at, so both need it. `::view-transition-old(*.scrimmed)` in `motion.css` keeps the old cover (with its fade) visible above the new one and fades it out over `--duration-scrim`; it needs `!important` to beat Astro's own named fade rules, and `z-index: 1` because the old image otherwise sits under the new one.
-6b. **A cover's flight box must clip.** `::view-transition-image-pair(*.cover) { overflow: clip }`: the card's picture (2:1 on desktop) and the post's (16:10) differ in shape, and unclipped the taller one poked out of the animating box, drawing a stepped double edge (owner report: janky cover). When testing transition CSS, don't inject it with `addStyleTag`: Astro swaps stylesheets on navigation, so it silently does nothing; edit the source and rebuild.
-6c. **A flying element must not sit inside a `.feather` block.** The browser lands a shared element in the pose its *new* copy has at the swap, and a parent that is mid-turn (`rotateY(60deg)`) makes the flier arrive tilted and squashed (owner report: the post title looked stretched crossing the cover). So on the post page the title, tags and updated line each carry `.feather` themselves, like the date and cover, and the `<header>` wrapper doesn't. Keep `data-flight` and `.feather` on the same element.
-6d. **The post page's cover has the same shape as the card's (`--ratio-card`: 2:1 on desktop, 16:10 on tablet and phones).** With different shapes the same photo is cropped differently at each end (a 16:9 photo zoomed about 11% between the card and the post) and the picture visibly re-crops and zooms while it flies (owner report: "changes happening to the cover image"). Measured by matching the photo's features in a card screenshot and a post screenshot: zoom 1.00. If either shape changes, change both.
-6. **Shared elements whose size changes:** text (`view-transition-class: text`) and covers (`cover`) hide the old copy and scale the new one, instead of cross-fading two sizes.
-7. **`::view-transition-group(main|sidebar)` has `animation: none`.** Morphing column boxes stretches the text.
-8. **Page scripts run once under the client router.** Put setup in an `astro:page-load` listener (see `search.astro`).
-9. **Links to files must never trigger the turnstile exit.** The owner tapped RSS on About, pressed Back, and saw an empty page: the exit had hidden the content, the browser then loaded `rss.xml` normally, and Safari's back/forward cache restored the page still hidden. Now: `RoundButton` adds `data-astro-reload` to links whose path has a file extension (so the client router ignores them), `MotionDirector` skips any navigation to a file path, and a `pageshow` (persisted) handler cancels leftover exit animations and names. Any new link to a file (feeds, images, downloads) must not go through the client router.
+**Rules (each from a real bug in the earlier version):**
+1. **Never put a static `transition:name` on list items.** Two cards with the same name break the transition, and a post that appears on two pages flies across the screen. Name the one card at navigation time.
+2. **Never pass an empty or undefined `transition:name`.** Astro then generates numbered names that pair unrelated elements across pages.
+3. **Never name the site header or its pieces.** Named, it morphed, flew in from above when the scroll position changed, and showed an off-screen header at the top.
+4. **Card and post covers must have the same shape** (`--ratio-card`: 2:1 on desktop, 16:10 on tablet and phones). With different shapes the same photo is cropped differently at each end and visibly zooms (about 11% for a 16:9 photo) as it travels. If either shape changes, change both.
+5. **A shared element must not sit inside an element that is itself animating** (a parent that is mid-turn makes it arrive tilted).
+6. **Page scripts run once under the client router.** Put setup in an `astro:page-load` listener (see `search.astro`); use a bundled `<script>`, not `define:vars` (inline scripts can re-run).
+7. **Links to files must never go through the client router.** The owner tapped RSS on About, pressed Back and saw an empty page. `RoundButton` adds `data-astro-reload` to links whose path has a file extension. Any new link to a file (feeds, images, downloads) needs the same.
+8. **Testing transition CSS:** don't inject it with `addStyleTag` (Astro swaps stylesheets on navigation, so it silently does nothing); edit the source and rebuild.
 
 ## SEO (`BaseHead.astro`, `src/lib/seo.ts`)
 
@@ -192,8 +179,8 @@ src/lib/posts.ts        getPosts, isPhoto/isNote, excerpt/summary/displayTitle, 
                         archive grouping, linkHost
 src/lib/format.ts       date parts in SITE.timeZone (en-GB)
 src/lib/seo.ts          JSON-LD builders
-src/lib/motion.ts       motion choice, timings, shared names
-src/layouts/BaseLayout  head, skip link, header, main (+ optional sidebar slot), footer, MotionDirector
+src/lib/transitions.ts  main-column animation, shared cover name
+src/layouts/BaseLayout  head, skip link, header, main (+ optional sidebar slot), footer, CoverFlight
 src/layouts/PageLayout  single-column text pages (About, policies)
 src/components/         one component per piece of the design (see README table); YearSection is the
                         year heading + spacing shared by the archive and books pages

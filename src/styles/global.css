@@ -3,7 +3,7 @@
  * Everything else is styled inside its own component.
  */
 @import './tokens.css';
-@import './motion.css';
+@import './transitions.css';
 
 /* Reset */
 *,
