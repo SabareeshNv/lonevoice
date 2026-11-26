@@ -1,0 +1,14 @@
+---
+/** A quiet line for a page that has nothing to list yet (a new blog with no posts). */
+---
+
+<p class="empty"><slot /></p>
+
+<style>
+  .empty {
+    margin-block-start: var(--space-m);
+    font-size: var(--text-intro);
+    font-weight: var(--weight-light);
+    color: var(--color-muted);
+  }
+</style>

@@ -5,6 +5,7 @@
  * than SITE.archivePageSize. A single post lives at /posts/<name>/ (see [slug].astro).
  */
 import type { GetStaticPaths, Page } from 'astro';
+import EmptyState from '@/components/EmptyState.astro';
 import Pagination from '@/components/Pagination.astro';
 import Sidebar from '@/components/Sidebar.astro';
 import YearSection from '@/components/YearSection.astro';
@@ -39,6 +40,7 @@ const description = first
 
 <BaseLayout title={title} description={description} sidebarOffset="calc(-1 * var(--space-s))">
   <h1 class="visually-hidden">Posts</h1>
+  {!years.length && <EmptyState>no posts yet.</EmptyState>}
   {
     years.map(({ year, months }) => (
       <YearSection year={year} past={year !== latestYear}>

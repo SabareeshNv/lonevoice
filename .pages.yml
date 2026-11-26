@@ -1,0 +1,124 @@
+# Pages CMS settings (https://pagescms.org): lets the owner write posts and edit the
+# books list from a phone. Every save is a commit to the repository; saving on the
+# main branch publishes the site. Keep these fields in step with src/content.config.ts.
+
+media:
+  # Cover pictures and pictures inside posts. The text written into a post is the
+  # relative path Astro expects ("../../assets/covers/name.jpg").
+  - name: covers
+    label: Cover pictures
+    input: src/assets/covers
+    output: ../../assets/covers
+    categories: [image]
+    rename: safe
+  # Book covers, written into src/content/books.yaml ("../assets/books/name.jpg").
+  - name: books
+    label: Book covers
+    input: src/assets/books
+    output: ../assets/books
+    categories: [image]
+    rename: safe
+
+content:
+  - name: posts
+    label: Posts
+    type: collection
+    path: src/content/posts
+    format: yaml-frontmatter
+    exclude: [".gitkeep"]
+    # The file name becomes the post's address (/posts/<name>/). It can be changed when
+    # the post is created; it can't be only digits.
+    filename:
+      template: "{year}-{month}-{day}-{primary}.md"
+      field: create
+    view:
+      fields: [title, date, draft]
+      primary: title
+      sort: [date, title]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        label: Title
+        type: string
+        description: Leave empty for a short note or a photo post.
+      - name: description
+        label: Summary
+        type: text
+        description: The line shown under the title on the timeline. Without one, the start of the text is used.
+      - name: date
+        label: Date
+        type: date
+        required: true
+        options:
+          format: "yyyy-MM-dd"
+      - name: cover
+        label: Cover picture
+        type: image
+        description: At least 1600 pixels wide, or it looks soft on big screens.
+        options:
+          media: covers
+      - name: coverAlt
+        label: Describe the cover picture
+        type: string
+        description: Required when there is a cover. Read aloud to people who can't see it.
+      - name: tags
+        label: Topics
+        type: string
+        list: true
+        description: Short lowercase words, such as travel or notes.
+      - name: link
+        label: Link
+        type: string
+        description: A web page this post is about (a full address starting with https://). It shows as a card under the text.
+      - name: linkTitle
+        label: Link name
+        type: string
+        description: What to call the linked page. Without one, the site's address is shown.
+      - name: pinned
+        label: Pinned
+        type: boolean
+        description: Show this post on the pinned card in the sidebar. Pin only one.
+      - name: updated
+        label: Updated on
+        type: date
+        description: Set when you meaningfully edit an old post. It shows under the title.
+        options:
+          format: "yyyy-MM-dd"
+      - name: draft
+        label: Draft
+        type: boolean
+        description: A draft is not shown on the site. Saving publishes everything else.
+      - name: body
+        label: Text
+        type: rich-text
+        options:
+          format: markdown
+          media: covers
+
+  - name: books
+    label: Books
+    type: file
+    path: src/content/books.yaml
+    format: yaml
+    list: true
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: author
+        label: Author
+        type: string
+        required: true
+      - name: year
+        label: Year you finished it
+        type: number
+        required: true
+        description: The year you read it, not the year it was published.
+      - name: cover
+        label: Cover picture
+        type: image
+        options:
+          media: books

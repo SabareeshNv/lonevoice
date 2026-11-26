@@ -63,6 +63,16 @@ Put cover images in `src/assets/covers/`. Astro resizes them and converts them t
 
 Footnotes (`[^1]`), tables, quotes, lists and code blocks are styled for reading. If the newest post has a cover, its picture loads first on the homepage; if it doesn't, nothing is loaded early.
 
+## Writing from a phone
+
+The site can be edited with **Pages CMS**, a free web app, so you can write a post on your phone and publish it without a laptop. The settings are in `.pages.yml`.
+
+1. Open [app.pagescms.org](https://app.pagescms.org) and sign in with GitHub.
+2. Install the GitHub App on this repository when asked.
+3. Open the repository, choose **Posts**, tap **Add**, fill in the form and save.
+
+Saving on the `main` branch publishes the post in about a minute. Use the **Draft** switch for anything unfinished. The same editor has a **Books** list for the books page. Cover pictures should be at least 1600 pixels wide.
+
 ## Pages
 
 | URL                  | Page                                                   |
