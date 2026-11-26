@@ -8,10 +8,10 @@ import { NAV } from '@/site.config';
 /**
  * Which menu item the current URL belongs to: the first segment of the URL
  * (so /posts/<name>/ belongs to "posts"), except that home's later pages
- * (/2/, /3/…) belong to "home".
+ * (/page/2/, /page/3/…) belong to "home".
  */
 const first = Astro.url.pathname.split('/').filter(Boolean)[0] ?? '';
-const section = /^\d+$/.test(first) ? '' : first;
+const section = first === 'page' ? '' : first;
 const isCurrent = (match: string) => section === match;
 ---
 

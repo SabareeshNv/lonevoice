@@ -77,7 +77,7 @@ Saving on the `main` branch publishes the post in about a minute. Use the **Draf
 
 | URL                  | Page                                                   |
 | -------------------- | ------------------------------------------------------ |
-| `/`                  | All posts, newest first, 10 per page (`/2/`, `/3/`, …) |
+| `/`                  | All posts, newest first, 10 per page (`/page/2/`, `/page/3/`, …) |
 | `/posts/<name>/`     | One post, with links to the older and newer posts       |
 | `/topics/`           | Every tag as a tile, the most used first               |
 | `/topics/<tag>/`     | The posts with that tag                                |

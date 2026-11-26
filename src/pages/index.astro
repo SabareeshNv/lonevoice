@@ -1,0 +1,11 @@
+---
+/** Homepage, page 1 of the post list. Later pages are /page/2/… (see page/[page].astro). */
+import HomeListing from '@/components/HomeListing.astro';
+import { paginate } from '@/lib/pagination';
+import { getPosts } from '@/lib/posts';
+import { SITE } from '@/site.config';
+
+const [page] = paginate(await getPosts(), SITE.pageSize, '/');
+---
+
+<HomeListing page={page} />

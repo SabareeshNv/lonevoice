@@ -1,0 +1,14 @@
+---
+/** The posts page, page 1. Later pages are /posts/page/2/… (see page/[page].astro). */
+import PostsListing from '@/components/PostsListing.astro';
+import { paginate } from '@/lib/pagination';
+import { getPosts, groupByYearAndMonth } from '@/lib/posts';
+import { SITE } from '@/site.config';
+
+const posts = await getPosts();
+// The newest year keeps the bright heading; older years are greyed, on every page.
+const latestYear = groupByYearAndMonth(posts)[0]?.year;
+const [page] = paginate(posts, SITE.archivePageSize, '/posts/');
+---
+
+<PostsListing page={page} latestYear={latestYear} />

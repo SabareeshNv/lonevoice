@@ -1,21 +1,20 @@
 ---
-/** Homepage: every post, newest first, ten to a page. */
-import type { GetStaticPaths, Page } from 'astro';
+/**
+ * The homepage's list of posts, newest first, ten to a page: page 1 is / and the
+ * rest are /page/2/, /page/3/… (see src/pages/index.astro and src/pages/page/[page].astro).
+ */
 import EmptyState from '@/components/EmptyState.astro';
 import Pagination from '@/components/Pagination.astro';
 import Sidebar from '@/components/Sidebar.astro';
 import Timeline from '@/components/Timeline.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { getPosts, type Post } from '@/lib/posts';
+import type { Pager } from '@/lib/pagination';
+import type { Post } from '@/lib/posts';
 import { websiteSchema } from '@/lib/seo';
 import { SITE } from '@/site.config';
 
-export const getStaticPaths = (async ({ paginate }) => {
-  return paginate(await getPosts(), { pageSize: SITE.pageSize });
-}) satisfies GetStaticPaths;
-
 interface Props {
-  page: Page<Post>;
+  page: Pager<Post>;
 }
 
 const { page } = Astro.props;

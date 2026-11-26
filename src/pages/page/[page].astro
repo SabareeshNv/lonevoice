@@ -1,0 +1,17 @@
+---
+/** Homepage pages 2 and up: /page/2/, /page/3/… Page 1 is the homepage itself (/). */
+import type { GetStaticPaths } from 'astro';
+import HomeListing from '@/components/HomeListing.astro';
+import { paginate } from '@/lib/pagination';
+import { getPosts } from '@/lib/posts';
+import { SITE } from '@/site.config';
+
+export const getStaticPaths = (async () => {
+  const pages = paginate(await getPosts(), SITE.pageSize, '/');
+  return pages.slice(1).map((page) => ({ params: { page: String(page.currentPage) }, props: { page } }));
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+---
+
+<HomeListing page={page} />

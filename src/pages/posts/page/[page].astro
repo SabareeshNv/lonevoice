@@ -1,0 +1,19 @@
+---
+/** Posts pages 2 and up: /posts/page/2/… Page 1 is /posts/. A post file can have any name, "page" included. */
+import type { GetStaticPaths } from 'astro';
+import PostsListing from '@/components/PostsListing.astro';
+import { paginate } from '@/lib/pagination';
+import { getPosts, groupByYearAndMonth } from '@/lib/posts';
+import { SITE } from '@/site.config';
+
+export const getStaticPaths = (async () => {
+  const posts = await getPosts();
+  const latestYear = groupByYearAndMonth(posts)[0]?.year;
+  const pages = paginate(posts, SITE.archivePageSize, '/posts/');
+  return pages.slice(1).map((page) => ({ params: { page: String(page.currentPage) }, props: { page, latestYear } }));
+}) satisfies GetStaticPaths;
+
+const { page, latestYear } = Astro.props;
+---
+
+<PostsListing page={page} latestYear={latestYear} />

@@ -17,7 +17,7 @@
   import { COVER_NAME } from '@/lib/transitions';
 
   // Bundled, so it runs once and keeps listening for every page change under the client router.
-  const POST = /^\/posts\/(?!\d+\/?$)([^/]+)\/?$/;
+  const POST = /^\/posts\/([^/]+)\/?$/; // /posts/<name>/ (the posts list's later pages are /posts/page/2/, two segments)
   const idOf = (url: URL) => POST.exec(url.pathname)?.[1];
   const name = (el: Element | null) => {
     if (el instanceof HTMLElement) el.style.viewTransitionName = COVER_NAME;

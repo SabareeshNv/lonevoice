@@ -1,4 +1,8 @@
 # The posts page used to live at /archive/. Send old links and bookmarks to /posts/.
 /archive /posts/ 301
 /archive/ /posts/ 301
-/archive/* /posts/:splat 301
+/archive/:n/ /posts/page/:n/ 301
+
+# Page 1 of a list is its own address (/ and /posts/), never /page/1/.
+/page/1/ / 301
+/posts/page/1/ /posts/ 301

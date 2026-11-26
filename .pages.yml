@@ -26,10 +26,12 @@ content:
     path: src/content/posts
     format: yaml-frontmatter
     exclude: [".gitkeep"]
-    # The file name becomes the post's address (/posts/<name>/). It can be changed when
-    # the post is created; it can't be only digits.
+    # The file name becomes the post's address (/posts/<name>/). It is suggested from the
+    # title and can be changed when the post is created. Any name works (letters, digits,
+    # dashes), including a number or the word "page": list pages live at /page/2/ and
+    # /posts/page/2/, which never clash with a post.
     filename:
-      template: "{year}-{month}-{day}-{primary}.md"
+      template: "{primary}.md"
       field: create
     view:
       fields: [title, date, draft]

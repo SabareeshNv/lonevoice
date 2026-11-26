@@ -1,10 +1,10 @@
 ---
-import type { Page } from 'astro';
+import type { Pager } from '@/lib/pagination';
 import type { Post } from '@/lib/posts';
 import RoundButton from './RoundButton.astro';
 
 interface Props {
-  page: Page<Post>;
+  page: Pager<Post>;
   /** Accessible name of the navigation. */
   label?: string;
 }
