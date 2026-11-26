@@ -2,6 +2,7 @@ import { defineCollection } from 'astro:content';
 import { file, glob } from 'astro/loaders';
 import { parse } from 'yaml';
 import { z } from 'astro/zod';
+import { clockTimeAsSiteTime } from './lib/format';
 
 /**
  * Every post lives in `src/content/posts/` as a Markdown file.
@@ -20,9 +21,10 @@ const posts = defineCollection({
   schema: ({ image }) =>
     z
       .object({
-        date: z.coerce.date(),
+        // The clock time the author saw, read as time in SITE.timeZone (see clockTimeAsSiteTime).
+        date: z.coerce.date().transform(clockTimeAsSiteTime),
         /** Set when a post is meaningfully edited; shown and sent to search engines. */
-        updated: z.coerce.date().optional(),
+        updated: z.coerce.date().transform(clockTimeAsSiteTime).optional(),
         title: z.string().optional(),
         description: z.string().optional(),
         cover: image().optional(),
