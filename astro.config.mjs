@@ -1,7 +1,9 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import { satteri } from '@astrojs/markdown-satteri';
 import { SITE } from './src/site.config.ts';
+import { captions } from './src/lib/hast-captions.mjs';
 
 // https://docs.astro.build/en/reference/configuration-reference/
 export default defineConfig({
@@ -15,6 +17,10 @@ export default defineConfig({
   prefetch: {
     prefetchAll: true,
     defaultStrategy: 'viewport',
+  },
+  markdown: {
+    // Sätteri is Astro's Markdown processor; the plugin makes an image with a title a captioned figure.
+    processor: satteri({ hastPlugins: [captions] }),
   },
   vite: {
     build: {

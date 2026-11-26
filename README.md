@@ -55,6 +55,14 @@ What a post has decides how it looks on the timeline:
 
 Put cover images in `src/assets/covers/`. Astro resizes them and converts them to WebP at build time.
 
+**Pictures inside a post:** put the image in `src/assets/` and write it in Markdown. Add the caption in quotes after the path and it appears under the picture:
+
+```md
+![A narrow lane](../../assets/covers/lane.jpg "The lane behind the market, seven in the morning.")
+```
+
+Footnotes (`[^1]`), tables, quotes, lists and code blocks are styled for reading. If the newest post has a cover, its picture loads first on the homepage; if it doesn't, nothing is loaded early.
+
 ## Pages
 
 | URL                  | Page                                                   |

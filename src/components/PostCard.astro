@@ -17,12 +17,16 @@ import TagList from './TagList.astro';
 
 interface Props {
   post: Post;
+  /** Load this post's cover at once instead of lazily (the first post on the page, when it has one). */
+  eager?: boolean;
 }
 
-const { post } = Astro.props;
+const { post, eager = false } = Astro.props;
 const { title, cover, coverAlt, tags, date, link, linkTitle } = post.data;
 const url = postUrl(post);
 const photo = isPhoto(post);
+// Only a post that really has a picture gets priority; a note or a text-only post has nothing to load.
+const loadNow = eager && cover ? ({ loading: 'eager', fetchpriority: 'high' } as const) : {};
 const { Content } = !title ? await render(post) : { Content: null };
 ---
 
@@ -38,7 +42,7 @@ const { Content } = !title ? await render(post) : { Content: null };
           <p class="summary">{summary(post)}</p>
           {cover && (
             <a class="thumb" href={url} tabindex="-1" aria-hidden="true" data-cover>
-              <Image src={cover} alt="" width={1280} widths={COVER_WIDTHS} sizes={COVER_SIZES} />
+              <Image src={cover} alt="" width={1280} widths={COVER_WIDTHS} sizes={COVER_SIZES} {...loadNow} />
               <span class="scrim" aria-hidden="true">
                 <span class="scrim-text">{title}</span>
               </span>
@@ -48,7 +52,7 @@ const { Content } = !title ? await render(post) : { Content: null };
       ) : photo && cover ? (
         <>
           <a class="photo" href={url} data-cover>
-            <Image src={cover} alt={coverAlt ?? ''} width={1280} widths={COVER_WIDTHS} sizes={COVER_SIZES} />
+            <Image src={cover} alt={coverAlt ?? ''} width={1280} widths={COVER_WIDTHS} sizes={COVER_SIZES} {...loadNow} />
           </a>
           <div class="caption">{Content && <Content />}</div>
         </>

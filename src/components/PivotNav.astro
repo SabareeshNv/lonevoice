@@ -73,7 +73,7 @@ const isCurrent = (match: string) => section === match;
 
   ul::after {
     content: '';
-    flex: 0 0 var(--space-l);
+    flex: 0 0 var(--space-xl); /* as wide as the fade, so the last item can scroll fully clear of it */
   }
 
   @media (min-width: 48rem) {
@@ -93,3 +93,18 @@ const isCurrent = (match: string) => section === match;
     }
   }
 </style>
+
+<script>
+  // On phones the menu scrolls sideways. If the current item sits in the fade at the
+  // right edge (the books page), scroll just far enough to bring it fully into view.
+  // Nothing happens where the menu fits (tablet and desktop) or the item is already clear.
+  document.addEventListener('astro:page-load', () => {
+    const list = document.querySelector<HTMLElement>('nav[aria-label="Sections"] ul');
+    const current = list?.querySelector<HTMLElement>('[aria-current="page"]');
+    if (!list || !current || list.scrollWidth <= list.clientWidth) return;
+
+    const fade = parseFloat(getComputedStyle(document.documentElement).fontSize) * 3; // --space-xl
+    const hidden = current.offsetLeft + current.offsetWidth - (list.scrollLeft + list.clientWidth - fade);
+    if (hidden > 0) list.scrollLeft += hidden;
+  });
+</script>

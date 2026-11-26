@@ -4,13 +4,15 @@ import PostCard from './PostCard.astro';
 
 interface Props {
   posts: Post[];
+  /** The first post's picture is the first thing a visitor sees: load it at once (only if it has one). */
+  eagerFirst?: boolean;
 }
 
-const { posts } = Astro.props;
+const { posts, eagerFirst = false } = Astro.props;
 ---
 
 <div class="timeline">
-  {posts.map((post) => <PostCard post={post} />)}
+  {posts.map((post, index) => <PostCard post={post} eager={eagerFirst && index === 0} />)}
 </div>
 
 <style>

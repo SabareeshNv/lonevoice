@@ -35,7 +35,8 @@ const { post } = Astro.props;
     flex-direction: column;
     gap: var(--space-2xs);
     padding: var(--space-m);
-    background: var(--gradient-zune);
+    /* A light dark tint keeps the small white text readable on the orange end of the gradient. */
+    background: linear-gradient(rgb(0 0 0 / 0.2), rgb(0 0 0 / 0.2)), var(--gradient-zune);
     color: var(--color-on-accent);
   }
 

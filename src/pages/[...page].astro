@@ -25,7 +25,7 @@ const description = first ? SITE.description : `Older posts on ${SITE.title}, pa
 
 <BaseLayout title={title} description={description} header="home" schema={first ? [websiteSchema()] : []}>
   <h2 class="visually-hidden">Latest posts</h2>
-  <Timeline posts={page.data} />
+  <Timeline posts={page.data} eagerFirst />
   <Pagination page={page} />
   <Sidebar slot="sidebar" showIntro={page.currentPage === 1} />
 </BaseLayout>
