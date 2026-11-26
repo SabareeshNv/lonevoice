@@ -1,6 +1,6 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { SITE } from '@/site.config';
-import { monthNameOf, yearOf } from './format';
+import { fullDate, monthNameOf, yearOf } from './format';
 
 export type Post = CollectionEntry<'posts'>;
 
@@ -11,6 +11,16 @@ export async function getPosts(): Promise<Post[]> {
 }
 
 export const postUrl = (post: Post) => `/posts/${post.id}/`;
+
+/**
+ * When a post was meaningfully edited: its `updated` date, but only if that is a later
+ * day than the post's own date. An `updated` equal to the date is a fresh post that had
+ * the field filled in by default (the editor starts date fields at today), not an edit.
+ */
+export const editedDate = (post: Post): Date | undefined => {
+  const { date, updated } = post.data;
+  return updated && updated > date && fullDate(updated) !== fullDate(date) ? updated : undefined;
+};
 
 /** A cover with no title is a photo post: its picture runs full width. */
 export const isPhoto = (post: Post) => Boolean(post.data.cover && !post.data.title);

@@ -3,7 +3,7 @@
  * Each page passes the objects that describe it to <BaseLayout schema={…}>.
  */
 import { SITE } from '@/site.config';
-import { displayTitle, postUrl, summary, type Post } from './posts';
+import { displayTitle, editedDate, postUrl, summary, type Post } from './posts';
 
 type Json = Record<string, unknown>;
 
@@ -41,7 +41,7 @@ export const postSchema = (post: Post, image: string): Json => ({
   url: absolute(postUrl(post)),
   mainEntityOfPage: absolute(postUrl(post)),
   datePublished: post.data.date.toISOString(),
-  dateModified: (post.data.updated ?? post.data.date).toISOString(),
+  dateModified: (editedDate(post) ?? post.data.date).toISOString(),
   image,
   keywords: post.data.tags.join(', ') || undefined,
   inLanguage: SITE.lang,

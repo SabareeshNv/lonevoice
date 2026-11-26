@@ -11,7 +11,7 @@ import TagList from '@/components/TagList.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { shortDate } from '@/lib/format';
 import { COVER_SIZES, COVER_WIDTHS } from '@/lib/images';
-import { displayTitle, getPosts, postUrl, summary, type Post } from '@/lib/posts';
+import { displayTitle, editedDate, getPosts, postUrl, summary, type Post } from '@/lib/posts';
 import { breadcrumbSchema, postSchema } from '@/lib/seo';
 import { SITE } from '@/site.config';
 
@@ -30,7 +30,8 @@ interface Props {
 }
 
 const { post, newer, older } = Astro.props;
-const { title, cover, coverAlt, tags, date, updated, link, linkTitle } = post.data;
+const { title, cover, coverAlt, tags, date, link, linkTitle } = post.data;
+const updated = editedDate(post); // only a real edit, never a date that merely equals the post's own
 const { Content } = await render(post);
 const heading = displayTitle(post);
 

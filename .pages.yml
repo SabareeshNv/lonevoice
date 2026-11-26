@@ -85,7 +85,9 @@ content:
       - name: updated
         label: Updated on
         type: date
-        description: Set when you meaningfully edit an old post. It shows under the title.
+        description: Leave this empty for a new post. Fill it in only when you meaningfully edit an old one; it then shows under the title.
+        # The editor starts date fields at today; an empty default keeps this one blank.
+        default: ""
         options:
           format: "yyyy-MM-dd"
       - name: draft
