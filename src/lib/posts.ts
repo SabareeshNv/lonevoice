@@ -4,10 +4,15 @@ import { fullDate, monthNameOf, yearOf } from './format';
 
 export type Post = CollectionEntry<'posts'>;
 
-/** All published posts, newest first. Drafts show only in `astro dev`. */
+/**
+ * All published posts, newest first. Drafts show only in `astro dev`.
+ * Posts are ordered by their date and time. If two have exactly the same date and
+ * time (older posts saved with a date only), the later file name comes first, so the
+ * order is at least the same on every build instead of depending on the file system.
+ */
 export async function getPosts(): Promise<Post[]> {
   const posts = await getCollection('posts', ({ data }) => (import.meta.env.PROD ? !data.draft : true));
-  return posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  return posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf() || b.id.localeCompare(a.id));
 }
 
 export const postUrl = (post: Post) => `/posts/${post.id}/`;

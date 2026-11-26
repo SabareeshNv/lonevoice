@@ -50,11 +50,13 @@ content:
         type: text
         description: The line shown under the title on the timeline. Without one, the start of the text is used.
       - name: date
-        label: Date
+        label: Date and time
         type: date
         required: true
+        description: Starts at the current time. The time (with your time zone) is saved so posts from the same day stay in the right order, newest first.
         options:
-          format: "yyyy-MM-dd"
+          time: true
+          format: "yyyy-MM-dd'T'HH:mm:ssxxx"
       - name: cover
         label: Cover picture
         type: image
