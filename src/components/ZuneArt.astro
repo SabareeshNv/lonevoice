@@ -9,25 +9,36 @@ interface Props {
 }
 
 const { size = 'small' } = Astro.props;
+
+/*
+ * Four shapes, each on its own layer. As the page scrolls, every layer drifts by a
+ * different share (`speed`, 0 to 1) of the full drift distance, so the shapes slide
+ * across each other: a parallax. Layers are painted in this order (first at the back).
+ * Keep every speed at or below 1: the drift distance is the most the shapes can move
+ * before a gap opens at the header's top and right edges.
+ */
+const shapes = [
+  { points: '760,0 520,0 300,560 560,560', gradient: 'a', opacity: 0.85, speed: 0.5 },
+  { points: '760,60 600,0 380,420 700,560 760,560', gradient: 'b', opacity: 0.55, speed: 0.8 },
+  { points: '430,0 330,0 120,560 230,560', gradient: 'a', opacity: 0.28, speed: 0.25 },
+  { points: '640,140 760,120 760,380 540,520', gradient: 'a', opacity: 0.45, speed: 1 },
+];
 ---
 
 <div class:list={['art', size]} aria-hidden="true">
-  <svg viewBox="0 0 760 560" preserveAspectRatio="none">
-    <defs>
-      <linearGradient id={`zune-a-${size}`} x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stop-color="#e6007e"></stop>
-        <stop offset="1" stop-color="#ff6a00"></stop>
-      </linearGradient>
-      <linearGradient id={`zune-b-${size}`} x1="1" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#ff6a00"></stop>
-        <stop offset="1" stop-color="#b0005a"></stop>
-      </linearGradient>
-    </defs>
-    <polygon points="760,0 520,0 300,560 560,560" fill={`url(#zune-a-${size})`} opacity="0.85"></polygon>
-    <polygon points="760,60 600,0 380,420 700,560 760,560" fill={`url(#zune-b-${size})`} opacity="0.55"></polygon>
-    <polygon points="430,0 330,0 120,560 230,560" fill={`url(#zune-a-${size})`} opacity="0.28"></polygon>
-    <polygon points="640,140 760,120 760,380 540,520" fill={`url(#zune-a-${size})`} opacity="0.45"></polygon>
-  </svg>
+  {
+    shapes.map((shape, i) => (
+      <svg class="layer" viewBox="0 0 760 560" preserveAspectRatio="none" style={`--speed: ${shape.speed}`}>
+        <defs>
+          <linearGradient id={`zune-${size}-${i}`} x1={shape.gradient === 'a' ? '0' : '1'} y1="0" x2={shape.gradient === 'a' ? '1' : '0'} y2="1">
+            <stop offset="0" stop-color={shape.gradient === 'a' ? '#e6007e' : '#ff6a00'} />
+            <stop offset="1" stop-color={shape.gradient === 'a' ? '#ff6a00' : '#b0005a'} />
+          </linearGradient>
+        </defs>
+        <polygon points={shape.points} fill={`url(#zune-${size}-${i})`} opacity={shape.opacity} />
+      </svg>
+    ))
+  }
 </div>
 
 <style>
@@ -47,9 +58,10 @@ const { size = 'small' } = Astro.props;
   }
 
   /* Phones: the shapes sit beside the name, clear of the menu below it. */
-  svg {
-    /* How far the shapes drift while the page scrolls (see the end of this file).
-       Kept inside the margin the shapes already overhang by, so no gap opens up. */
+  .layer {
+    /* The most a shape drifts while the page scrolls (see the end of this file); each
+       layer moves a share of it (--speed). Kept inside the margin the shapes already
+       overhang the header by, so no gap opens up. */
     --drift-x: -1.5rem;
     --drift-y: 0.5rem;
     position: absolute;
@@ -59,7 +71,7 @@ const { size = 'small' } = Astro.props;
     height: 6.25rem;
   }
 
-  .large svg {
+  .large .layer {
     width: 24rem;
     height: 15rem;
     right: -5rem;
@@ -67,14 +79,14 @@ const { size = 'small' } = Astro.props;
 
   /* Tablet and desktop: the shapes sweep out from behind the end of the name. */
   @media (min-width: 48rem) {
-    .small svg {
+    .small .layer {
       width: 60rem;
       height: 26rem;
       top: -3.5rem;
       right: -8rem;
     }
 
-    .large svg {
+    .large .layer {
       width: 76rem;
       height: 38rem;
       top: -4rem;
@@ -89,7 +101,7 @@ const { size = 'small' } = Astro.props;
       background: linear-gradient(90deg, var(--color-bg) 6%, transparent 40%);
     }
 
-    svg {
+    .layer {
       --drift-x: -5rem;
       --drift-y: 2rem;
     }
@@ -97,13 +109,14 @@ const { size = 'small' } = Astro.props;
 
   /*
    * The shapes drift slowly as the page scrolls: left and a little down, so they lag
-   * behind the header like the background of a Windows Phone panorama. Driven by the
+   * behind the header like the background of a Windows Phone panorama, each at its own
+   * depth (--speed) so they slide across each other. Driven by the
    * scroll position in CSS, so there is no script. Browsers without scroll-driven
    * animations (and readers who ask for less motion) simply see the shapes still.
    */
   @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: scroll()) {
-      svg {
+      .layer {
         animation: drift linear both;
         animation-timeline: scroll(root block);
         animation-range: 0 25rem; /* about the height of the header: it has scrolled away by then */
@@ -113,7 +126,7 @@ const { size = 'small' } = Astro.props;
 
   @keyframes drift {
     to {
-      transform: translate(var(--drift-x), var(--drift-y));
+      transform: translate(calc(var(--drift-x) * var(--speed)), calc(var(--drift-y) * var(--speed)));
     }
   }
 </style>
