@@ -48,6 +48,10 @@ const { size = 'small' } = Astro.props;
 
   /* Phones: the shapes sit beside the name, clear of the menu below it. */
   svg {
+    /* How far the shapes drift while the page scrolls (see the end of this file).
+       Kept inside the margin the shapes already overhang by, so no gap opens up. */
+    --drift-x: -1.5rem;
+    --drift-y: 0.5rem;
     position: absolute;
     top: -0.75rem;
     right: -2rem;
@@ -83,6 +87,33 @@ const { size = 'small' } = Astro.props;
 
     .large::after {
       background: linear-gradient(90deg, var(--color-bg) 6%, transparent 40%);
+    }
+
+    svg {
+      --drift-x: -5rem;
+      --drift-y: 2rem;
+    }
+  }
+
+  /*
+   * The shapes drift slowly as the page scrolls: left and a little down, so they lag
+   * behind the header like the background of a Windows Phone panorama. Driven by the
+   * scroll position in CSS, so there is no script. Browsers without scroll-driven
+   * animations (and readers who ask for less motion) simply see the shapes still.
+   */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: scroll()) {
+      svg {
+        animation: drift linear both;
+        animation-timeline: scroll(root block);
+        animation-range: 0 25rem; /* about the height of the header: it has scrolled away by then */
+      }
+    }
+  }
+
+  @keyframes drift {
+    to {
+      transform: translate(var(--drift-x), var(--drift-y));
     }
   }
 </style>
