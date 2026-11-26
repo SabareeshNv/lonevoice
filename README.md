@@ -135,7 +135,7 @@ Each component keeps its markup, its styles (scoped with `<style>`) and its scri
 
 Page changes use Astro's view transitions (`<ClientRouter />` in `BaseHead.astro`) and are kept small:
 
-- **Content:** the old page content fades out quickly and the new content fades in, rising a few pixels.
+- **Content:** like Windows 10 Mobile, the old page content fades out and nudges away while the new content slides in from the right (from the left when you go back) and fades in.
 - **Cover:** opening a post that has a cover moves the picture from its card to the top of the post page, and back again.
 - **Header, sidebar and footer:** stay put.
 

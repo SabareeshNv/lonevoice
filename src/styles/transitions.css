@@ -1,7 +1,8 @@
 /*
  * Page-change animation (see src/lib/transitions.ts for the main column).
  *
- *   main column   old fades out fast, new fades in and rises 0.5rem
+ *   main column   old fades out and nudges away; new slides in from the right (from
+ *                 the left when going back) while fading in, like Windows 10 Mobile
  *   header, sidebar, footer   don't animate (they are the same on every page)
  *   post cover    the picture of the post being opened travels from its card to
  *                 the top of the post page, and back
@@ -10,20 +11,36 @@
  */
 
 :root {
+  --slide-distance: 2.5rem; /* how far the new content travels; the old nudges half as far */
   --duration-cover: 0.45s;
   --ease-settle: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-@keyframes lv-page-out {
-  to {
+@keyframes lv-in-from-right {
+  from {
     opacity: 0;
+    transform: translateX(var(--slide-distance));
   }
 }
 
-@keyframes lv-page-in {
+@keyframes lv-in-from-left {
   from {
     opacity: 0;
-    transform: translateY(0.5rem);
+    transform: translateX(calc(var(--slide-distance) * -1));
+  }
+}
+
+@keyframes lv-out-left {
+  to {
+    opacity: 0;
+    transform: translateX(calc(var(--slide-distance) * -0.5));
+  }
+}
+
+@keyframes lv-out-right {
+  to {
+    opacity: 0;
+    transform: translateX(calc(var(--slide-distance) * 0.5));
   }
 }
 

@@ -103,18 +103,18 @@ A grid of books read, grouped by the year finished (newest year first), styled l
 
 ## Motion (page transitions) — read before touching
 
-**Experiment branch (November 2026):** the Windows Phone animations (pivot, turnstile, feather, continuum with lift) were removed on the `experiment` branch and replaced with a small, plain set. `main` still has the Windows Phone version; its details are in the git history (`MotionDirector.astro`, `src/lib/motion.ts`, `src/styles/motion.css`). The owner asked for "smooth and sensible" motion that need not copy Windows Phone, and only on elements where it makes sense. Don't add motion to every element.
+**November 2026:** the Windows Phone 7/8 animations (pivot, turnstile, feather, continuum with lift) were replaced with a small, plain set, now on `main`; the old version's details are in the git history (last commit before the change: `89ca4b2`) (`MotionDirector.astro`, `src/lib/motion.ts`, `src/styles/motion.css`). The owner asked for "smooth and sensible" motion that need not copy Windows Phone 7/8, and only on elements where it makes sense; then asked for the page slide to feel a little like Windows 10 Mobile. Don't add motion to every element.
 
 Built on Astro's `<ClientRouter />` (in `BaseHead.astro`), so pages swap without full reloads. Prefetch (`prefetchAll`, viewport strategy in `astro.config.mjs`) keeps the next page ready.
 
 | File | Role |
 | --- | --- |
 | `src/lib/transitions.ts` | The main column's animation (`pageAnimation`, passed to `transition:animate` in `BaseLayout`) and the shared name `COVER_NAME` |
-| `src/styles/transitions.css` | The two keyframes, the cover's timing, and the reduced-motion rule |
+| `src/styles/transitions.css` | The four slide keyframes, the slide distance, the cover's timing, and the reduced-motion rule |
 | `src/components/CoverFlight.astro` | A small script that names the cover that should travel |
 
 **What moves:**
-- **Main column** (`transition:name="main"`): the old content fades out in 0.12 s, the new content fades in over 0.3 s while rising 0.5 rem. The same for every navigation, forwards or back. No stagger, no per-item or per-paragraph animation.
+- **Main column** (`transition:name="main"`), Windows 10 Mobile style: the old content fades out in 0.15 s while nudging 1.25 rem away; the new content slides in 2.5 rem (`--slide-distance`) while fading in over 0.35 s, easing to a stop (`cubic-bezier(0.1, 0.9, 0.2, 1)`). **Forwards it comes from the right, going back from the left** (`forwards` and `backwards` in `pageAnimation`). The distance is small on purpose: a whole column sliding far streaks its text on phones. No stagger, no per-item or per-paragraph animation.
 - **Header, sidebar, footer:** don't animate. The sidebar is named `sidebar` with `transition:animate="none"` so it swaps instantly; the header and footer are part of the page background, which cross-fades (identical headers show no change).
 - **Post cover:** opening a post from a page that shows its card (home, posts list, topic) moves the card's cover into the post page's cover (0.45 s, ease-out), and going back moves it to its card. Notes, posts with no cover, and posts opened from search or from another post have no travelling picture; the page just changes. The date and title don't fly.
 - Hover and colour micro-transitions on buttons and links (0.15 s) are not page transitions and stay.
