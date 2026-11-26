@@ -11,7 +11,7 @@
  */
 
 :root {
-  --slide-distance: 2.5rem; /* how far the new content travels; the old nudges half as far */
+  --slide-distance: 5rem; /* how far the new content travels; the old one leaves 60% as far */
   --duration-cover: 0.45s;
   --ease-settle: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
@@ -33,14 +33,14 @@
 @keyframes lv-out-left {
   to {
     opacity: 0;
-    transform: translateX(calc(var(--slide-distance) * -0.5));
+    transform: translateX(calc(var(--slide-distance) * -0.6));
   }
 }
 
 @keyframes lv-out-right {
   to {
     opacity: 0;
-    transform: translateX(calc(var(--slide-distance) * 0.5));
+    transform: translateX(calc(var(--slide-distance) * 0.6));
   }
 }
 

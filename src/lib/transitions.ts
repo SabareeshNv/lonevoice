@@ -17,13 +17,13 @@ import type { TransitionAnimationPair } from 'astro';
 const EASE_OUT = 'cubic-bezier(0.1, 0.9, 0.2, 1)';
 
 const forwards: TransitionAnimationPair = {
-  old: { name: 'lv-out-left', duration: '0.15s', easing: 'ease-in', fillMode: 'forwards' },
-  new: { name: 'lv-in-from-right', duration: '0.35s', easing: EASE_OUT, fillMode: 'backwards' },
+  old: { name: 'lv-out-left', duration: '0.2s', easing: 'ease-in', fillMode: 'forwards' },
+  new: { name: 'lv-in-from-right', duration: '0.45s', easing: EASE_OUT, fillMode: 'backwards' },
 };
 
 const backwards: TransitionAnimationPair = {
-  old: { name: 'lv-out-right', duration: '0.15s', easing: 'ease-in', fillMode: 'forwards' },
-  new: { name: 'lv-in-from-left', duration: '0.35s', easing: EASE_OUT, fillMode: 'backwards' },
+  old: { name: 'lv-out-right', duration: '0.2s', easing: 'ease-in', fillMode: 'forwards' },
+  new: { name: 'lv-in-from-left', duration: '0.45s', easing: EASE_OUT, fillMode: 'backwards' },
 };
 
 export const pageAnimation = { forwards, backwards };
